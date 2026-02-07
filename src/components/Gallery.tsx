@@ -44,7 +44,12 @@ const artworks = [
     title: "Celestial Whispers",
     image: "https://images.pexels.com/photos/1624496/pexels-photo-1624496.jpeg?auto=compress&cs=tinysrgb&w=800",
   },
-];
+  {
+    id: 10,
+    title: "Alice",
+    image: "/images/alice-001.webp",
+  },
+] ;
 
 function Gallery() {
   return (

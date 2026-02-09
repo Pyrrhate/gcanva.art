@@ -121,9 +121,17 @@ Extensions recommandées :
 
 ### Problèmes avec les dépendances
 ```bash
-# Supprimer node_modules et réinstaller
+# Windows (PowerShell ou CMD)
+rmdir /s /q node_modules
+del package-lock.json
+npm install
+
+# macOS/Linux
 rm -rf node_modules package-lock.json
 npm install
+
+# Alternative compatible tous systèmes
+npm clean-install
 ```
 
 ### Le port 5173 est déjà utilisé
@@ -267,9 +275,17 @@ Recommended extensions:
 
 ### Issues with dependencies
 ```bash
-# Remove node_modules and reinstall
+# Windows (PowerShell or CMD)
+rmdir /s /q node_modules
+del package-lock.json
+npm install
+
+# macOS/Linux
 rm -rf node_modules package-lock.json
 npm install
+
+# Cross-platform alternative
+npm clean-install
 ```
 
 ### Port 5173 is already in use

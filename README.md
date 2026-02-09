@@ -325,7 +325,3 @@ taskkill /PID <PID> /F
 2. Commit your changes: `git commit -m 'Add my feature'`
 3. Push to the branch: `git push origin feature/my-feature`
 4. Open a Pull Request
-
-## 📄 License
-
-This project is open source.

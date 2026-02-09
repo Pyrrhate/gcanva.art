@@ -121,6 +121,14 @@ Extensions recommandées :
 
 ### Problèmes avec les dépendances
 ```bash
+# Recommandé : Utiliser npm ci (préserve le package-lock.json)
+npm ci
+
+# Si le problème persiste, supprimer le cache npm
+npm cache clean --force
+npm ci
+
+# En dernier recours : Réinstaller complètement (attention aux versions)
 # Windows (PowerShell ou CMD)
 rmdir /s /q node_modules
 del package-lock.json
@@ -129,10 +137,9 @@ npm install
 # macOS/Linux
 rm -rf node_modules package-lock.json
 npm install
-
-# Alternative compatible tous systèmes
-npm clean-install
 ```
+
+> **⚠️ Note de sécurité** : Supprimer `package-lock.json` peut installer des versions différentes des dépendances, ce qui peut introduire des vulnérabilités. Utilisez cette méthode uniquement si le fichier lock est corrompu.
 
 ### Le port 5173 est déjà utilisé
 ```bash
@@ -275,6 +282,14 @@ Recommended extensions:
 
 ### Issues with dependencies
 ```bash
+# Recommended: Use npm ci (preserves package-lock.json)
+npm ci
+
+# If the problem persists, clear npm cache
+npm cache clean --force
+npm ci
+
+# Last resort: Complete reinstall (beware of version changes)
 # Windows (PowerShell or CMD)
 rmdir /s /q node_modules
 del package-lock.json
@@ -283,10 +298,9 @@ npm install
 # macOS/Linux
 rm -rf node_modules package-lock.json
 npm install
-
-# Cross-platform alternative
-npm clean-install
 ```
+
+> **⚠️ Security Note**: Deleting `package-lock.json` may install different dependency versions, which could introduce vulnerabilities. Use this method only if the lock file is corrupted.
 
 ### Port 5173 is already in use
 ```bash

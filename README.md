@@ -129,9 +129,14 @@ npm cache clean --force
 npm ci
 
 # En dernier recours : Réinstaller complètement (attention aux versions)
-# Windows (PowerShell ou CMD)
+# Windows CMD
 rmdir /s /q node_modules
 del package-lock.json
+npm install
+
+# Windows PowerShell
+Remove-Item -Recurse -Force node_modules
+Remove-Item package-lock.json
 npm install
 
 # macOS/Linux
@@ -290,9 +295,14 @@ npm cache clean --force
 npm ci
 
 # Last resort: Complete reinstall (beware of version changes)
-# Windows (PowerShell or CMD)
+# Windows CMD
 rmdir /s /q node_modules
 del package-lock.json
+npm install
+
+# Windows PowerShell
+Remove-Item -Recurse -Force node_modules
+Remove-Item package-lock.json
 npm install
 
 # macOS/Linux

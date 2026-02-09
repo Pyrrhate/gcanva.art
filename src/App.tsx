@@ -110,22 +110,81 @@ function App() {
       <Manifesto />
 
       <footer id="contact" className="py-20 px-6 border-t border-gray-800">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-light mb-8 tracking-wide">Get in Touch</h2>
-          <p className="text-gray-400 mb-8 tracking-wide">
-            For commissions and collaborations
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-light mb-8 tracking-wide text-center">
+            Collaborons sur le prochain calque.
+          </h2>
+          
+          <p className="text-gray-300 mb-6 leading-relaxed max-w-2xl mx-auto text-center">
+            Que ce soit pour une question technique, une proposition artistique ou simplement pour échanger sur une publication du carnet, je suis toujours ouvert au dialogue.
           </p>
-          <a
-            href="mailto:hello@auroraart.com"
-            className="inline-block text-lg tracking-wider hover:text-gray-400 transition-colors"
-          >
-            hello@auroraart.com
-          </a>
+
+          <div className="text-gray-400 space-y-4 mb-12 max-w-2xl mx-auto">
+            <p className="text-center md:text-left">
+              <span className="inline-block mr-3">📨</span>
+              <strong>Email :</strong>{' '}
+              <a
+                href="mailto:guillaume.canva@gmail.com"
+                className="hover:text-gray-200 transition-colors"
+              >
+                guillaume.canva@gmail.com
+              </a>
+            </p>
+            
+            <p className="text-center md:text-left">
+              <span className="inline-block mr-3">💻</span>
+              <strong>GitHub :</strong>{' '}
+              <a
+                href="https://github.com/Pyrrhate/gcanva.art"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-gray-200 transition-colors"
+              >
+                github.com/Pyrrhate/gcanva.art
+              </a>
+            </p>
+            
+            <p className="text-center md:text-left">
+              <span className="inline-block mr-3">📍</span>
+              <strong>Localisation :</strong> Doornik City (Tournai)
+            </p>
+          </div>
+
+          <div className="text-center text-sm text-gray-500 pt-8 border-t border-gray-800">
+            Ce site est propulsé par{' '}
+            <a
+              href="https://bolt.new"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-gray-300 transition-colors"
+            >
+              Bolt.new
+            </a>
+            , déployé avec{' '}
+            <a
+              href="https://www.netlify.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-gray-300 transition-colors"
+            >
+              Netlify
+            </a>
+            , et entretenu avec soin via{' '}
+            <a
+              href="https://code.visualstudio.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-gray-300 transition-colors"
+            >
+              VS Code
+            </a>
+            .
+          </div>
         </div>
       </footer>
 
-      <div className="py-6 text-center text-sm text-gray-500 tracking-wider">
-        © 2024 AURORA. All rights reserved.
+      <div className="py-6 text-center text-sm text-gray-500">
+        © 2026 gcanva.art
       </div>
     </div>
   );

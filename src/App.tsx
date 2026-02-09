@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
-import Gallery from './components/Gallery';
 import Manifesto from './components/Manifesto';
 import Hero from './components/Hero';
 import AreYouHuman from './components/AreYouHuman';
+import Projects from './components/Projects';
 
 type PageType = 'home' | 'areyouhuman';
 
@@ -106,7 +106,7 @@ function App() {
       </nav>
 
       <Hero />
-      <Gallery />
+      <Projects />
       <Manifesto />
 
       <footer id="contact" className="py-20 px-6 border-t border-gray-800">

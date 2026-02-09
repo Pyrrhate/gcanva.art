@@ -8,33 +8,25 @@ function Manifesto() {
 
         <div className="space-y-8 text-gray-300 leading-relaxed">
           <p className="text-lg md:text-xl font-serif italic text-gray-200">
-            "Art is not a mirror to reflect reality, but a hammer with which to shape it."
+            "GCanva n'est pas qu'un portfolio, c'est un laboratoire ouvert."
           </p>
 
           <p className="text-base md:text-lg font-serif leading-loose">
-            In the space between waking and dreaming lies a realm of infinite possibility.
-            My work seeks to capture these ephemeral moments—the surreal beauty of organic
-            forms, the quiet poetry of transformation, and the haunting elegance of the subconscious.
+            Je vois la création comme un processus de sédimentation. Sur gcanva.art, je compile les fragments de mon exploration visuelle et sonore. Ce site est mon carnet de bord digital, un espace où les idées ne sont pas seulement exposées, mais documentées dans leur évolution.
           </p>
 
           <p className="text-base md:text-lg font-serif leading-loose">
-            Each piece is an exploration of the oneiric landscape, where familiar forms dissolve
-            into abstraction and reality bends to the logic of dreams. Through this lens, I invite
-            viewers to question their perceptions and embrace the uncanny beauty of the liminal.
+            Ma démarche : Entre le code et le pixel, je cherche la simplicité. Utilisant des outils comme Visual Studio Code pour sculpter l'architecture de mes projets et l'IA pour repousser les limites de l'imagination, je construis un pont entre l'art traditionnel et les technologies modernes.
           </p>
 
           <p className="text-base md:text-lg font-serif leading-loose">
-            I believe in the power of art to transcend the mundane, to touch something deeper
-            within us—a memory we've never had, a place we've never been, yet somehow recognize.
-            This is the essence of organic surrealism: the marriage of natural forms with
-            impossible geometries, the collision of the visceral and the ethereal.
-          </p>
+             <ul>Ce que vous trouverez ici :
+              <li>Postes & Réflexions : Des instantanés de mes recherches quotidiennes.</li>
 
-          <p className="text-base md:text-lg font-serif leading-loose">
-            My process is one of intuitive discovery, allowing the work to emerge through
-            layers of intention and accident. Like the formation of clouds or the growth of
-            crystals, each piece follows its own internal logic, revealing patterns that exist
-            beyond conscious control.
+              <li>Multimédia : Un mélange organique de sons, de vidéos et d'images.</li>
+
+              <li>Expérimentations : Des projets nés de la curiosité, du test et parfois de l'erreur fertile.</li>
+            </ul>
           </p>
 
           <p className="text-lg md:text-xl font-serif italic text-gray-200 pt-8">

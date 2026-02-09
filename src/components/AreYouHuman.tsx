@@ -18,7 +18,7 @@ const AreYouHuman = () => {
   const [isValidated, setIsValidated] = useState(false);
   const [message, setMessage] = useState('');
 
-  const correctOrder = ['WORK', 'BUY', 'CONSUME', 'DIE', 'REPEAT'];
+  const correctOrder = ['WORK', 'BUY', 'CONSUME', 'REPEAT', 'DIE'];
 
   const handleDragStart = (e: React.DragEvent<HTMLDiv>, id: number) => {
     setDraggedItem(id);

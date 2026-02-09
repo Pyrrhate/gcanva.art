@@ -20,7 +20,7 @@ npm run dev
 - Allez dans le menu
 - Cliquez sur "ARE YOU HUMAN"
 - Testez le drag-and-drop
-- L'ordre correct est : WORK → BUY → CONSUME → DIE → REPEAT
+- L'ordre correct est : WORK → BUY → CONSUME → REPEAT → DIE
 
 ### 3️⃣ Préparez vos images
 ```

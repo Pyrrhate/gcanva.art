@@ -10,7 +10,7 @@
 ## 🎭 TESTER "ARE YOU HUMAN"
 - [ ] Aller dans le menu → "ARE YOU HUMAN"
 - [ ] Essayer de drag-and-drop les mots
-- [ ] Tester l'ordre correct: WORK → BUY → CONSUME → DIE → REPEAT
+- [ ] Tester l'ordre correct: WORK → BUY → CONSUME → REPEAT → DIE
 - [ ] Vérifier le message de validation ✓
 
 ---

@@ -108,10 +108,10 @@ gcanva.art/
 ## 🔧 Configuration de Visual Studio Code
 
 Extensions recommandées :
-- ESLint
-- Prettier
-- TypeScript and JavaScript Language Features
-- Tailwind CSS IntelliSense
+- **ESLint** - Analyse et correction du code JavaScript/TypeScript
+- **Prettier** - Formatage automatique du code
+- **Tailwind CSS IntelliSense** - Autocomplétion pour Tailwind CSS
+- **ES7+ React/Redux/React-Native snippets** - Snippets React utiles
 
 ## ❓ Dépannage
 
@@ -269,10 +269,10 @@ gcanva.art/
 ## 🔧 Visual Studio Code Configuration
 
 Recommended extensions:
-- ESLint
-- Prettier
-- TypeScript and JavaScript Language Features
-- Tailwind CSS IntelliSense
+- **ESLint** - JavaScript/TypeScript code analysis and fixing
+- **Prettier** - Automatic code formatting
+- **Tailwind CSS IntelliSense** - Tailwind CSS autocomplete
+- **ES7+ React/Redux/React-Native snippets** - Useful React snippets
 
 ## ❓ Troubleshooting
 

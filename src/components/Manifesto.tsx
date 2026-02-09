@@ -28,10 +28,6 @@ function Manifesto() {
               <li>Expérimentations : Des projets nés de la curiosité, du test et parfois de l'erreur fertile.</li>
             </ul>
           </p>
-
-          <p className="text-lg md:text-xl font-serif italic text-gray-200 pt-8">
-            In this twilight realm, we find ourselves most truly.
-          </p>
         </div>
       </div>
     </section>

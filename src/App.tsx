@@ -3,15 +3,34 @@ import { Menu, X } from 'lucide-react';
 import Gallery from './components/Gallery';
 import Manifesto from './components/Manifesto';
 import Hero from './components/Hero';
+import AreYouHuman from './components/AreYouHuman';
+
+type PageType = 'home' | 'areyouhuman';
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState<PageType>('home');
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     element?.scrollIntoView({ behavior: 'smooth' });
     setIsMenuOpen(false);
   };
+
+  // Simple page routing
+  if (currentPage === 'areyouhuman') {
+    return (
+      <div>
+        <button
+          onClick={() => setCurrentPage('home')}
+          className="fixed top-6 left-6 z-50 px-4 py-2 text-sm font-mono tracking-wider border-2 border-gray-600 text-gray-300 hover:border-gray-400 hover:text-gray-100 transition-colors"
+        >
+          ← RETOUR
+        </button>
+        <AreYouHuman />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#1a1a1a] text-gray-100">
@@ -40,6 +59,12 @@ function App() {
               MANIFESTO
             </button>
             <button
+              onClick={() => setCurrentPage('areyouhuman')}
+              className="hover:text-gray-400 transition-colors"
+            >
+              ARE YOU HUMAN
+            </button>
+            <button
               onClick={() => scrollToSection('contact')}
               className="hover:text-gray-400 transition-colors"
             >
@@ -62,6 +87,12 @@ function App() {
                 className="text-left hover:text-gray-400 transition-colors"
               >
                 MANIFESTO
+              </button>
+              <button
+                onClick={() => setCurrentPage('areyouhuman')}
+                className="text-left hover:text-gray-400 transition-colors"
+              >
+                ARE YOU HUMAN
               </button>
               <button
                 onClick={() => scrollToSection('contact')}

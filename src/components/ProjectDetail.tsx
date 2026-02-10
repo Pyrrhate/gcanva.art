@@ -1,14 +1,16 @@
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Grid, Layers } from 'lucide-react';
 import { useState } from 'react';
 import { Project } from '../data/projects';
 
 interface ProjectDetailProps {
   project: Project;
   onBack: () => void;
+  defaultViewMode?: 'scroll' | 'slider';
 }
 
-const ProjectDetail = ({ project, onBack }: ProjectDetailProps) => {
+const ProjectDetail = ({ project, onBack, defaultViewMode = 'scroll' }: ProjectDetailProps) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [viewMode, setViewMode] = useState<'scroll' | 'slider'>(defaultViewMode);
 
   const handlePrevImage = () => {
     setCurrentImageIndex(
@@ -19,8 +21,6 @@ const ProjectDetail = ({ project, onBack }: ProjectDetailProps) => {
   const handleNextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % project.images.length);
   };
-
-  const currentImage = project.images[currentImageIndex];
 
   return (
     <div className="min-h-screen bg-[#1a1a1a] text-gray-100">
@@ -41,9 +41,38 @@ const ProjectDetail = ({ project, onBack }: ProjectDetailProps) => {
         <div className="max-w-6xl mx-auto px-6">
           {/* Header */}
           <div className="mb-16">
-            <h1 className="text-5xl md:text-6xl font-light tracking-wider mb-4">
-              {project.title}
-            </h1>
+            <div className="flex items-start justify-between mb-4">
+              <h1 className="text-5xl md:text-6xl font-light tracking-wider">
+                {project.title}
+              </h1>
+              
+              {/* View Mode Toggle */}
+              <div className="flex gap-2 border border-gray-800 rounded-lg p-1">
+                <button
+                  onClick={() => setViewMode('scroll')}
+                  className={`p-2 rounded transition-colors ${
+                    viewMode === 'scroll'
+                      ? 'bg-gray-800 text-white'
+                      : 'text-gray-500 hover:text-gray-300'
+                  }`}
+                  title="Scroll view"
+                >
+                  <Grid size={20} />
+                </button>
+                <button
+                  onClick={() => setViewMode('slider')}
+                  className={`p-2 rounded transition-colors ${
+                    viewMode === 'slider'
+                      ? 'bg-gray-800 text-white'
+                      : 'text-gray-500 hover:text-gray-300'
+                  }`}
+                  title="Slider view"
+                >
+                  <Layers size={20} />
+                </button>
+              </div>
+            </div>
+            
             <div className="flex gap-8 text-sm text-gray-400 tracking-wider mb-8">
               <span>{project.category}</span>
               <span>{project.year}</span>
@@ -64,21 +93,15 @@ const ProjectDetail = ({ project, onBack }: ProjectDetailProps) => {
           </div>
 
           {/* Gallery */}
-          <div className="space-y-12">
-            {project.images.map((image, index) => (
-              <div
-                key={index}
-                className={`transition-opacity duration-300 ${
-                  index === currentImageIndex ? 'opacity-100' : 'opacity-50 hover:opacity-75'
-                }`}
-                onClick={() => setCurrentImageIndex(index)}
-                style={{ cursor: 'pointer' }}
-              >
+          {viewMode === 'slider' ? (
+            // Slider Mode - Single image with navigation
+            <div className="mb-12">
+              <div className="transition-opacity duration-300">
                 {/* Image */}
                 <div className="relative aspect-video bg-gray-900 mb-6 overflow-hidden border border-gray-800">
                   <img
-                    src={image.url}
-                    alt={image.caption}
+                    src={project.images[currentImageIndex].url}
+                    alt={project.images[currentImageIndex].caption}
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -86,22 +109,62 @@ const ProjectDetail = ({ project, onBack }: ProjectDetailProps) => {
                 {/* Caption and Annotation */}
                 <div className="pl-2 md:pl-8">
                   <h2 className="text-2xl font-light tracking-wider mb-2">
-                    {image.caption}
+                    {project.images[currentImageIndex].caption}
                   </h2>
-                  {image.annotation && (
+                  {project.images[currentImageIndex].annotation && (
                     <p className="text-gray-400 leading-relaxed max-w-2xl">
-                      {image.annotation}
+                      {project.images[currentImageIndex].annotation}
                     </p>
                   )}
 
                   {/* Image counter */}
                   <div className="mt-4 text-xs text-gray-500 tracking-wider">
-                    Image {index + 1} of {project.images.length}
+                    Image {currentImageIndex + 1} of {project.images.length}
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          ) : (
+            // Scroll Mode - All images stacked
+            <div className="space-y-12">
+              {project.images.map((image, index) => (
+                <div
+                  key={index}
+                  className={`transition-opacity duration-300 ${
+                    index === currentImageIndex ? 'opacity-100' : 'opacity-50 hover:opacity-75'
+                  }`}
+                  onClick={() => setCurrentImageIndex(index)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  {/* Image */}
+                  <div className="relative aspect-video bg-gray-900 mb-6 overflow-hidden border border-gray-800">
+                    <img
+                      src={image.url}
+                      alt={image.caption}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+
+                  {/* Caption and Annotation */}
+                  <div className="pl-2 md:pl-8">
+                    <h2 className="text-2xl font-light tracking-wider mb-2">
+                      {image.caption}
+                    </h2>
+                    {image.annotation && (
+                      <p className="text-gray-400 leading-relaxed max-w-2xl">
+                        {image.annotation}
+                      </p>
+                    )}
+
+                    {/* Image counter */}
+                    <div className="mt-4 text-xs text-gray-500 tracking-wider">
+                      Image {index + 1} of {project.images.length}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
 
           {/* Gallery Navigation */}
           {project.images.length > 1 && (

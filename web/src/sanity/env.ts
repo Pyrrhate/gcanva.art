@@ -1,4 +1,4 @@
-const DEFAULT_SANITY_PROJECT_ID = "l3lfckoz";
+const DEFAULT_SANITY_PROJECT_ID = "y6mzxly0";
 const DEFAULT_SANITY_DATASET = "production";
 const DEFAULT_SANITY_API_VERSION = "2024-01-01";
 

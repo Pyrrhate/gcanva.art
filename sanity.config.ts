@@ -10,7 +10,7 @@ const singletonTypes = new Set(['siteSettings'])
 export default defineConfig({
   name: 'default',
   title: 'gcanva-studio',
-  projectId: "l3lfckoz",
+  projectId: "y6mzxly0",
   dataset: "production",
 
   plugins: [

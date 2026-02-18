@@ -1,75 +1,162 @@
+import { client } from "@/sanity/client";
 import CreativeFeed, { CreativeFeedItem } from "@/components/CreativeFeed";
 
-// ===== MOCK DATA for development =====
-const mockFeedItems: CreativeFeedItem[] = [
-  {
-    id: "text-001",
-    type: "text",
-    data: {
-      title: "Alchimie Ondulatoire",
-      content: "Les ondes sont le langage du cosmos. Chaque vibration porte une intention, une fréquence qui résonne à travers les dimensions. C'est en écoutant ces fréquences que je sculpe l'invisible.",
-      author: "gcanva",
-      timestamp: "18 Feb 2026"
-    }
-  },
-  {
-    id: "image-001",
-    type: "image",
-    data: {
-      src: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=800&h=450&fit=crop",
-      alt: "Abstract waves and frequencies",
-      title: "Onde Primordiale #1",
-      caption: "Une capture des fréquences électromagnétiques",
-      aspectRatio: 16 / 9
-    }
-  },
-  {
-    id: "music-001",
-    type: "music",
-    data: {
-      title: "Frequency Dreams",
-      artist: "gcanva",
-      cover: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&h=300&fit=crop",
-      duration: "3:45",
-      description: "Une exploration sonore des ondes underground, électronique organique mélangeant synthétiseurs modifiés et enregistrements de phénomènes naturels.",
-      spotifyUrl: "https://spotify.com"
-    }
-  },
-  {
-    id: "text-002",
-    type: "text",
-    data: {
-      title: "La Magie Électronique",
-      content: "Entre science et sorcellerie, il y a un espace où les électrons dansent en symbiose avec l'intention. L'électronique est l'alchimie du XXIe siècle.",
-      author: "gcanva",
-      timestamp: "17 Feb 2026"
-    }
-  },
-  {
-    id: "image-002",
-    type: "image",
-    data: {
-      src: "https://images.unsplash.com/photo-1459479557261-8a5e0a4e9c7d?w=800&h=600&fit=crop",
-      alt: "Electronic circuit board",
-      title: "Circuit Sacré",
-      caption: "Photographie macro d'une carte mère lumineuse",
-      aspectRatio: 4 / 3
-    }
-  },
-  {
-    id: "music-002",
-    type: "music",
-    data: {
-      title: "Underground Signal",
-      artist: "gcanva",
-      cover: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&h=300&fit=crop",
-      duration: "5:12",
-      description: "Électronique minimaliste avec couches de field recordings souterrain. Un hymne aux ondes invisibles qui nous entourent.",
-      spotifyUrl: "https://spotify.com"
-    }
+// ===== GROQ Query =====
+const FEED_QUERY = `
+  *[_type == "feedItem"] | order(publishedAt desc) {
+    _id,
+    title,
+    type,
+    publishedAt,
+    textContent,
+    author,
+    imageFile {
+      asset -> {
+        url
+      },
+      hotspot,
+      crop
+    },
+    imageCaption,
+    musicArtist,
+    musicCover {
+      asset -> {
+        url
+      }
+    },
+    duration,
+    spotifyUrl,
+    musicDescription,
+    audioUrl
   }
-];
+`;
 
-export default function Page() {
-  return <CreativeFeed items={mockFeedItems} />;
+// ===== Type for raw Sanity data =====
+interface SanityFeedItem {
+  _id: string;
+  title: string;
+  type: "text" | "image" | "music";
+  publishedAt?: string;
+  textContent?: string;
+  author?: string;
+  imageFile?: {
+    asset?: {
+      url?: string;
+    };
+    hotspot?: any;
+    crop?: any;
+  };
+  imageCaption?: string;
+  musicArtist?: string;
+  musicCover?: {
+    asset?: {
+      url?: string;
+    };
+  };
+  duration?: string;
+  spotifyUrl?: string;
+  musicDescription?: string;
+  audioUrl?: string;
 }
+
+// ===== Transform Sanity data to CreativeFeedItem =====
+function transformSanityToFeedItem(item: SanityFeedItem): CreativeFeedItem {
+  const baseId = item._id || `item-${Math.random()}`;
+  const baseTimestamp = item.publishedAt
+    ? new Date(item.publishedAt)
+    : undefined;
+
+  // ===== TEXT CARD =====
+  if (item.type === "text") {
+    return {
+      id: baseId,
+      type: "text",
+      timestamp: baseTimestamp,
+      data: {
+        title: item.title,
+        content: item.textContent || "",
+        author: item.author,
+        timestamp: item.publishedAt
+          ? new Date(item.publishedAt).toLocaleDateString("fr-FR", {
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+            })
+          : undefined,
+      },
+    };
+  }
+
+  // ===== IMAGE CARD =====
+  if (item.type === "image") {
+    return {
+      id: baseId,
+      type: "image",
+      timestamp: baseTimestamp,
+      data: {
+        src: item.imageFile?.asset?.url || "",
+        alt: item.title,
+        title: item.title,
+        caption: item.imageCaption,
+        aspectRatio: 16 / 9, // Default, peut être enrichi si métadonnées dispo
+      },
+    };
+  }
+
+  // ===== MUSIC CARD =====
+  if (item.type === "music") {
+    return {
+      id: baseId,
+      type: "music",
+      timestamp: baseTimestamp,
+      data: {
+        title: item.title,
+        artist: item.musicArtist || "Unknown Artist",
+        cover: item.musicCover?.asset?.url,
+        duration: item.duration,
+        spotifyUrl: item.spotifyUrl,
+        description: item.musicDescription,
+        audioUrl: item.audioUrl,
+      },
+    };
+  }
+
+  // Fallback (ne devrait pas arriver ici si schéma est bon)
+  return {
+    id: baseId,
+    type: "text" as const,
+    timestamp: baseTimestamp,
+    data: {
+      title: item.title,
+      content: "",
+    },
+  };
+}
+
+// ===== Server Component =====
+export default async function Page() {
+  let feedItems: CreativeFeedItem[] = [];
+  let error: string | null = null;
+
+  try {
+    const sanityItems: SanityFeedItem[] = await client.fetch(FEED_QUERY);
+    feedItems = sanityItems.map(transformSanityToFeedItem);
+  } catch (err) {
+    console.error("Error fetching feed items:", err);
+    error = "Failed to load feed items";
+  }
+
+  return (
+    <>
+      {error && (
+        <div className="fixed top-4 right-4 bg-destructive text-destructive-foreground px-4 py-2 rounded text-sm">
+          {error}
+        </div>
+      )}
+      <CreativeFeed items={feedItems} />
+    </>
+  );
+}
+
+// ===== ISR (Revalidate cache every 60 seconds) =====
+export const revalidate = 60;

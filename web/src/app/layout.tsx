@@ -15,19 +15,16 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "gcanva.art — Digital Garden",
   description: "A curated space for creative expressions, images, music, and events.",
-  lang: "en",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+    <html lang="fr"> {/* Tu peux mettre "fr" ici pour ton journal */}
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {children}
       </body>
     </html>

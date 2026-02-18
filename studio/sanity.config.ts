@@ -7,7 +7,7 @@ export default defineConfig({
   name: 'default',
   title: 'studio-base.gcanva.art',
 
-  projectId: 'l3lfckoz',
+  projectId: 'y6mzxly0',
   dataset: 'production',
 
   plugins: [structureTool(), visionTool()],

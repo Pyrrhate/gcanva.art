@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { createClient } from "next-sanity";
-import createImageUrlBuilder from "@sanity/image-url"; // Changement ici
+import { createImageUrlBuilder } from "@sanity/image-url";
 
 export const client = createClient({
   projectId: "y6mzxly0",
@@ -9,7 +9,6 @@ export const client = createClient({
   useCdn: false,
 });
 
-// On utilise le nouveau constructeur recommandé
 const builder = createImageUrlBuilder(client);
 
 export function urlFor(source: any) {

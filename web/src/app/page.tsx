@@ -1,162 +1,133 @@
+import {defineQuery} from "next-sanity";
+import CreativeFeed, { type CreativeFeedItem } from "@/components/CreativeFeed";
 import { client } from "@/sanity/client";
-import CreativeFeed, { CreativeFeedItem } from "@/components/CreativeFeed";
 
-// ===== GROQ Query =====
-const FEED_QUERY = `
-  *[_type == "feedItem"] | order(publishedAt desc) {
+const HOMEPAGE_HEADER_QUERY = defineQuery(/* groq */ `
+  *[_type == "homepage"][0] {
+    "headerTitle": coalesce(feedHeaderTitle, heroTitle, "Creative Feed"),
+    "headerSubtitle": coalesce(feedHeaderSubtitle, heroSubtitle, "Un flux vivant d'idées et d'explorations créatives")
+  }
+`);
+
+const GARDEN_NOTES_QUERY = defineQuery(/* groq */ `
+  *[_type == "gardenNote"] | order(lastTendedAt desc) {
     _id,
     title,
-    type,
-    publishedAt,
-    textContent,
-    author,
-    imageFile {
-      asset -> {
-        url
-      },
-      hotspot,
-      crop
-    },
+    confidenceLevel,
+    lastTendedAt,
+    displayMode,
     imageCaption,
-    musicArtist,
-    musicCover {
-      asset -> {
-        url
+    mainImage {
+      asset->{
+        url,
+        metadata {
+          lqip,
+          dimensions { aspectRatio }
+        }
       }
     },
-    duration,
-    spotifyUrl,
-    musicDescription,
-    audioUrl
+    "contentText": pt::text(content),
+    "sectionItems": contentSections[]{
+      title,
+      "contentText": pt::text(content)
+    }
   }
-`;
+`);
 
-// ===== Type for raw Sanity data =====
-interface SanityFeedItem {
+interface HeaderData {
+  headerTitle?: string;
+  headerSubtitle?: string;
+}
+
+interface GardenNoteData {
   _id: string;
   title: string;
-  type: "text" | "image" | "music";
-  publishedAt?: string;
-  textContent?: string;
-  author?: string;
-  imageFile?: {
-    asset?: {
-      url?: string;
-    };
-    hotspot?: any;
-    crop?: any;
-  };
+  confidenceLevel?: number;
+  lastTendedAt?: string;
+  displayMode?: "auto" | "single" | "sectioned";
   imageCaption?: string;
-  musicArtist?: string;
-  musicCover?: {
+  mainImage?: {
     asset?: {
       url?: string;
+      metadata?: {
+        dimensions?: {
+          aspectRatio?: number;
+        };
+      };
     };
   };
-  duration?: string;
-  spotifyUrl?: string;
-  musicDescription?: string;
-  audioUrl?: string;
+  contentText?: string;
+  sectionItems?: Array<{
+    title?: string;
+    contentText?: string;
+  }>;
 }
 
-// ===== Transform Sanity data to CreativeFeedItem =====
-function transformSanityToFeedItem(item: SanityFeedItem): CreativeFeedItem {
-  const baseId = item._id || `item-${Math.random()}`;
-  const baseTimestamp = item.publishedAt
-    ? new Date(item.publishedAt)
+function mapGardenNoteToFeedItems(note: GardenNoteData): CreativeFeedItem[] {
+  const timestamp = note.lastTendedAt
+    ? new Date(note.lastTendedAt).toLocaleDateString("fr-FR", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      })
     : undefined;
 
-  // ===== TEXT CARD =====
-  if (item.type === "text") {
-    return {
-      id: baseId,
-      type: "text",
-      timestamp: baseTimestamp,
-      data: {
-        title: item.title,
-        content: item.textContent || "",
-        author: item.author,
-        timestamp: item.publishedAt
-          ? new Date(item.publishedAt).toLocaleDateString("fr-FR", {
-              year: "numeric",
-              month: "short",
-              day: "numeric",
-            })
-          : undefined,
-      },
-    };
-  }
+  const confidencePrefix = typeof note.confidenceLevel === "number" ? `[${note.confidenceLevel}%] ` : "";
+  const sections = (note.sectionItems || [])
+    .filter((section) => (section.contentText || "").trim().length > 0)
+    .map((section) => ({
+      title: section.title,
+      content: section.contentText || "",
+    }));
 
-  // ===== IMAGE CARD =====
-  if (item.type === "image") {
-    return {
-      id: baseId,
-      type: "image",
-      timestamp: baseTimestamp,
-      data: {
-        src: item.imageFile?.asset?.url || "",
-        alt: item.title,
-        title: item.title,
-        caption: item.imageCaption,
-        aspectRatio: 16 / 9, // Default, peut être enrichi si métadonnées dispo
-      },
-    };
-  }
-
-  // ===== MUSIC CARD =====
-  if (item.type === "music") {
-    return {
-      id: baseId,
-      type: "music",
-      timestamp: baseTimestamp,
-      data: {
-        title: item.title,
-        artist: item.musicArtist || "Unknown Artist",
-        cover: item.musicCover?.asset?.url,
-        duration: item.duration,
-        spotifyUrl: item.spotifyUrl,
-        description: item.musicDescription,
-        audioUrl: item.audioUrl,
-      },
-    };
-  }
-
-  // Fallback (ne devrait pas arriver ici si schéma est bon)
-  return {
-    id: baseId,
-    type: "text" as const,
-    timestamp: baseTimestamp,
+  const textItem: CreativeFeedItem = {
+    id: note._id,
+    type: "text",
     data: {
-      title: item.title,
-      content: "",
+      title: `${confidencePrefix}${note.title}`,
+      content: note.contentText || "",
+      author: "Garden Note",
+      timestamp,
+      displayMode: note.displayMode || "auto",
+      sections,
     },
   };
-}
 
-// ===== Server Component =====
-export default async function Page() {
-  let feedItems: CreativeFeedItem[] = [];
-  let error: string | null = null;
-
-  try {
-    const sanityItems: SanityFeedItem[] = await client.fetch(FEED_QUERY);
-    feedItems = sanityItems.map(transformSanityToFeedItem);
-  } catch (err) {
-    console.error("Error fetching feed items:", err);
-    error = "Failed to load feed items";
+  const imageUrl = note.mainImage?.asset?.url;
+  if (!imageUrl) {
+    return [textItem];
   }
 
-  return (
-    <>
-      {error && (
-        <div className="fixed top-4 right-4 bg-destructive text-destructive-foreground px-4 py-2 rounded text-sm">
-          {error}
-        </div>
-      )}
-      <CreativeFeed items={feedItems} />
-    </>
-  );
+  const imageItem: CreativeFeedItem = {
+    id: `${note._id}-image`,
+    type: "image",
+    data: {
+      src: imageUrl,
+      alt: note.title,
+      title: note.title,
+      caption: note.imageCaption,
+      aspectRatio: note.mainImage?.asset?.metadata?.dimensions?.aspectRatio || 4 / 3,
+    },
+  };
+
+  return [imageItem, textItem];
 }
 
-// ===== ISR (Revalidate cache every 60 seconds) =====
 export const revalidate = 60;
+
+export default async function Page() {
+  const [header, notes] = await Promise.all([
+    client.fetch<HeaderData | null>(HOMEPAGE_HEADER_QUERY),
+    client.fetch<GardenNoteData[]>(GARDEN_NOTES_QUERY),
+  ]);
+
+  const feedItems = (notes || []).flatMap(mapGardenNoteToFeedItems);
+
+  return (
+    <CreativeFeed
+      items={feedItems}
+      headerTitle={header?.headerTitle || "Creative Feed"}
+      headerSubtitle={header?.headerSubtitle || "Un flux vivant d'idées et d'explorations créatives"}
+    />
+  );
+}

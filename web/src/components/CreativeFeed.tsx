@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Grid3x3, List } from "lucide-react";
-import FeedItem, { FeedItemProps } from "@/components/FeedItem";
+import FeedItem, { type FeedItemProps } from "@/components/FeedItem";
 
 export interface CreativeFeedItem extends FeedItemProps {
   id: string;
@@ -12,29 +12,34 @@ export interface CreativeFeedItem extends FeedItemProps {
 
 interface CreativeFeedProps {
   items?: CreativeFeedItem[];
+  headerTitle?: string;
+  headerSubtitle?: string;
 }
 
 type ViewMode = "timeline" | "masonry";
 
-export default function CreativeFeed({ items = [] }: CreativeFeedProps) {
+export default function CreativeFeed({
+  items = [],
+  headerTitle = "Creative Feed",
+  headerSubtitle = "Un flux vivant d'idées et d'explorations créatives",
+}: CreativeFeedProps) {
   const [viewMode, setViewMode] = useState<ViewMode>("timeline");
 
   return (
-    <div className="w-full min-h-screen bg-background">
+    <div className="w-full min-h-screen bg-background text-foreground">
       {/* Header avec Toggle */}
-      <div className="sticky top-0 z-40 backdrop-blur-md bg-background/80 border-b border-border">
-        <div className="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between">
+      <div className="sticky top-0 z-40 border-b border-stone-200 bg-background/90 backdrop-blur-md">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
           <div className="flex flex-col">
-            <h1 className="text-2xl font-bold text-foreground">Creative Feed</h1>
-            <p className="text-sm text-muted-foreground mt-1">
-              {viewMode === "timeline"
-                ? "Chronological flow, centered meditation"
-                : "Asymmetric masonry, spatial exploration"}
+            <h1 className="text-2xl font-semibold tracking-tight text-[#2C3E50]">{headerTitle}</h1>
+            <p className="mt-1 text-sm text-muted-foreground">{headerSubtitle}</p>
+            <p className="mt-1 text-xs text-muted-foreground/80">
+              {viewMode === "timeline" ? "Vue linéaire" : "Vue mosaïque"}
             </p>
           </div>
 
           {/* Toggle Button Group */}
-          <div className="flex gap-2 bg-card rounded-lg p-1 border border-border">
+          <div className="flex gap-2 rounded-lg border border-stone-200 bg-card p-1 shadow-sm">
             <Button
               variant={viewMode === "timeline" ? "default" : "ghost"}
               size="sm"
@@ -60,7 +65,7 @@ export default function CreativeFeed({ items = [] }: CreativeFeedProps) {
 
       {/* TIMELINE VIEW */}
       {viewMode === "timeline" && (
-        <div className="max-w-2xl mx-auto px-6 py-12">
+        <div className="mx-auto max-w-2xl px-6 py-12">
           {/* Ligne centrale ondulante */}
           <div className="absolute left-1/2 top-24 bottom-0 w-1 -translate-x-1/2">
             <div className="w-full h-full bg-gradient-to-b from-transparent via-primary to-transparent opacity-20 animate-pulse"></div>
@@ -97,7 +102,7 @@ export default function CreativeFeed({ items = [] }: CreativeFeedProps) {
 
                   {/* Content */}
                   <div className="flex-1 pt-1">
-                    <div className="bg-card rounded-2xl p-8 border border-border glass-morphism">
+                    <div className="glass-morphism rounded-2xl border border-stone-200 bg-card p-8 shadow-sm">
                       <FeedItem type={item.type} data={item.data} />
                     </div>
                   </div>
@@ -110,7 +115,7 @@ export default function CreativeFeed({ items = [] }: CreativeFeedProps) {
 
       {/* MASONRY VIEW */}
       {viewMode === "masonry" && (
-        <div className="max-w-7xl mx-auto px-6 py-12">
+        <div className="mx-auto max-w-7xl px-6 py-12">
           {items.length === 0 ? (
             <div className="flex items-center justify-center py-24">
               <div className="text-center">
@@ -123,16 +128,16 @@ export default function CreativeFeed({ items = [] }: CreativeFeedProps) {
               </div>
             </div>
           ) : (
-            <div className="masonry-grid">
+            <div className="columns-1 gap-6 space-y-6 sm:columns-2 lg:columns-3">
               {items.map((item, index) => (
                 <div
                   key={item.id}
-                  className="masonry-item animate-fade-up"
+                  className="mb-6 break-inside-avoid animate-fade-up"
                   style={{
                     animationDelay: `${(index % 3) * 0.1}s`,
                   }}
                 >
-                  <div className="bg-card rounded-2xl p-6 border border-border glass-morphism h-full hover:scale-105 transition-transform duration-300">
+                  <div className="glass-morphism h-full rounded-2xl border border-stone-200 bg-card p-6 shadow-sm transition-transform duration-300 hover:scale-[1.01]">
                     <FeedItem type={item.type} data={item.data} />
                   </div>
                 </div>

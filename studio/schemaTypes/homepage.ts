@@ -44,6 +44,23 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
 
+    defineField({
+      name: 'feedHeaderTitle',
+      title: 'Feed - Titre Header',
+      type: 'string',
+      description: 'Titre affiché en haut du feed côté front.',
+      validation: (Rule) => Rule.max(120),
+    }),
+
+    defineField({
+      name: 'feedHeaderSubtitle',
+      title: 'Feed - Sous-titre Header',
+      type: 'text',
+      rows: 2,
+      description: 'Sous-titre affiché sous le titre du feed.',
+      validation: (Rule) => Rule.max(240),
+    }),
+
     // ===== STACK SECTION =====
     defineField({
       name: 'stackTitle',

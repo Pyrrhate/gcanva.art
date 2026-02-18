@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import Image from "next/image";
 import { Music, Play } from "lucide-react";
 
@@ -21,6 +22,11 @@ interface TextItemData {
   content: string;
   timestamp?: string;
   author?: string;
+  displayMode?: "auto" | "single" | "sectioned";
+  sections?: Array<{
+    title?: string;
+    content: string;
+  }>;
 }
 
 interface MusicItemData {
@@ -72,6 +78,47 @@ function ImageCard({ data }: { data: ImageItemData }) {
 
 /* ===== TEXT CARD ===== */
 function TextCard({ data }: { data: TextItemData }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [activeSectionIndex, setActiveSectionIndex] = useState(0);
+
+  const normalizedSections = useMemo(() => {
+    if (data.displayMode === "sectioned" && data.sections && data.sections.length > 0) {
+      return data.sections.filter((section) => section.content?.trim().length > 0);
+    }
+
+    if (data.displayMode === "single") {
+      return [{ title: "Contenu", content: data.content }];
+    }
+
+    const paragraphs = data.content
+      .split(/\n{2,}/g)
+      .map((paragraph) => paragraph.trim())
+      .filter(Boolean);
+
+    if (paragraphs.length > 1) {
+      return paragraphs.map((paragraph, index) => ({
+        title: `Partie ${index + 1}`,
+        content: paragraph,
+      }));
+    }
+
+    const fallback = data.content.trim();
+    if (fallback.length <= 560) {
+      return [{ title: "Contenu", content: fallback }];
+    }
+
+    const chunks = fallback.match(/.{1,360}(\s|$)/g) || [fallback];
+    return chunks.map((chunk, index) => ({
+      title: `Partie ${index + 1}`,
+      content: chunk.trim(),
+    }));
+  }, [data.content, data.displayMode, data.sections]);
+
+  const hasSplitContent = normalizedSections.length > 1;
+  const canExpand = hasSplitContent || normalizedSections[0]?.content.length > 340;
+  const currentSection = normalizedSections[activeSectionIndex] || normalizedSections[0];
+  const previewText = currentSection?.content?.slice(0, 340).trim();
+
   return (
     <article className="group relative h-full flex flex-col p-6 rounded-2xl bg-card border border-border/50 transition-all hover:border-primary/30">
       <div className="flex-1 space-y-4">
@@ -89,9 +136,41 @@ function TextCard({ data }: { data: TextItemData }) {
         <h2 className="text-xl font-bold text-foreground leading-snug group-hover:text-primary transition-colors duration-200">
           {data.title}
         </h2>
-        <p className="text-sm leading-relaxed text-foreground/80 whitespace-pre-wrap">
-          {data.content}
+
+        {hasSplitContent && isExpanded && (
+          <div className="flex flex-wrap gap-2 pb-1">
+            {normalizedSections.map((section, index) => (
+              <button
+                key={`${section.title || "section"}-${index}`}
+                type="button"
+                onClick={() => setActiveSectionIndex(index)}
+                className={`rounded-full border px-3 py-1 text-[11px] transition-colors ${
+                  activeSectionIndex === index
+                    ? "border-primary bg-primary/10 text-primary"
+                    : "border-border text-muted-foreground hover:border-primary/40"
+                }`}
+              >
+                {section.title || `Partie ${index + 1}`}
+              </button>
+            ))}
+          </div>
+        )}
+
+        <p className="whitespace-pre-wrap text-sm leading-relaxed text-foreground/80">
+          {isExpanded || !canExpand
+            ? currentSection?.content
+            : `${previewText}${(currentSection?.content?.length || 0) > 340 ? "…" : ""}`}
         </p>
+
+        {canExpand && (
+          <button
+            type="button"
+            onClick={() => setIsExpanded((current) => !current)}
+            className="inline-flex items-center rounded-md border border-border px-3 py-1 text-xs font-medium text-primary transition-colors hover:bg-primary/10"
+          >
+            {isExpanded ? "Réduire" : "Développer l'article"}
+          </button>
+        )}
       </div>
       <div className="absolute inset-0 rounded-2xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-[inset_0_0_15px_hsl(var(--primary)/0.05)]" />
     </article>

@@ -35,6 +35,21 @@ export default defineType({
       initialValue: () => new Date().toISOString(),
     }),
 
+    defineField({
+      name: 'order',
+      title: 'Order',
+      type: 'number',
+      description: 'Manual ordering value (lower appears first).',
+      initialValue: 0,
+    }),
+
+    defineField({
+      name: 'slug',
+      title: 'Slug',
+      type: 'slug',
+      options: {source: 'title', maxLength: 96},
+    }),
+
     // ===== CONDITIONAL FIELDS FOR "TEXT" =====
     defineField({
       name: 'textContent',
@@ -42,13 +57,7 @@ export default defineType({
       type: 'text',
       rows: 8,
       hidden: ({ document }) => document?.type !== 'text',
-      validation: (Rule) =>
-        Rule.custom((value, context) => {
-          if (context.document?.type === 'text' && !value) {
-            return 'Text content is required for text items'
-          }
-          return true
-        }),
+      description: 'Optional long-form text for text items.',
     }),
 
     defineField({
@@ -149,13 +158,14 @@ export default defineType({
       title: 'title',
       type: 'type',
       publishedAt: 'publishedAt',
+      order: 'order',
     },
     prepare(selection) {
-      const { title, type, publishedAt } = selection
+      const { title, type, publishedAt, order } = selection
       const date = publishedAt ? new Date(publishedAt).toLocaleDateString() : 'Unpublished'
       return {
         title,
-        subtitle: `${type?.toUpperCase()} • ${date}`,
+        subtitle: `${type?.toUpperCase()} • ${date} • #${typeof order === 'number' ? order : '-'}`,
       }
     },
   },

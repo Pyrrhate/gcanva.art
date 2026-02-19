@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Music, Play } from "lucide-react";
 
 export interface FeedItemProps {
@@ -19,7 +20,12 @@ interface ImageItemData {
 
 interface TextItemData {
   title: string;
+  postSlug?: string;
   content: string;
+  imageSrc?: string;
+  imageAlt?: string;
+  imageCaption?: string;
+  imageAspectRatio?: number;
   timestamp?: string;
   author?: string;
   displayMode?: "auto" | "single" | "sectioned";
@@ -51,7 +57,7 @@ function ImageCard({ data }: { data: ImageItemData }) {
   const aspectRatio = data.aspectRatio || 16 / 9;
 
   return (
-    <div className="group relative">
+    <article className="article-card group relative h-full rounded-2xl border border-stone-200 p-6 shadow-sm transition-transform duration-300 hover:scale-[1.01]">
       <div 
         className="relative overflow-hidden rounded-2xl bg-muted/20"
         style={{ aspectRatio: aspectRatio }}
@@ -72,13 +78,12 @@ function ImageCard({ data }: { data: ImageItemData }) {
           {data.caption && <p className="text-xs text-muted-foreground line-clamp-2">{data.caption}</p>}
         </div>
       )}
-    </div>
+    </article>
   );
 }
 
 /* ===== TEXT CARD ===== */
 function TextCard({ data }: { data: TextItemData }) {
-  const [isExpanded, setIsExpanded] = useState(false);
   const [activeSectionIndex, setActiveSectionIndex] = useState(0);
 
   const normalizedSections = useMemo(() => {
@@ -115,15 +120,35 @@ function TextCard({ data }: { data: TextItemData }) {
   }, [data.content, data.displayMode, data.sections]);
 
   const hasSplitContent = normalizedSections.length > 1;
-  const canExpand = hasSplitContent || normalizedSections[0]?.content.length > 340;
   const currentSection = normalizedSections[activeSectionIndex] || normalizedSections[0];
-  const previewText = currentSection?.content?.slice(0, 340).trim();
+  const currentText = currentSection?.content || "";
+  const isGreatPost = hasSplitContent || currentText.length > POST_PREVIEW_THRESHOLD;
+  const previewText = currentText.slice(0, POST_PREVIEW_THRESHOLD).trim();
 
   return (
-    <article className="group relative h-full flex flex-col p-6 rounded-2xl bg-card border border-border/50 transition-all hover:border-primary/30">
+    <article className="article-card group relative flex h-full flex-col rounded-2xl border border-stone-200 p-6 shadow-sm transition-transform duration-300 hover:scale-[1.01]">
       <div className="flex-1 space-y-4">
+        {data.imageSrc && (
+          <figure className="space-y-2">
+            <div
+              className="relative overflow-hidden rounded-xl bg-muted/20"
+              style={{ aspectRatio: data.imageAspectRatio || 4 / 3 }}
+            >
+              <Image
+                src={data.imageSrc}
+                alt={data.imageAlt || data.title}
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                sizes="(max-width: 1024px) 100vw, 700px"
+              />
+            </div>
+            {data.imageCaption && <figcaption className="text-xs text-muted-foreground">{data.imageCaption}</figcaption>}
+          </figure>
+        )}
+
         {(data.author || data.timestamp) && (
-          <div className="flex items-center gap-3 text-xs text-muted-foreground pb-3 border-b border-border/50">
+          <div className="space-y-3 pb-1">
+            <div className="flex items-center gap-3 text-xs text-muted-foreground">
             {data.author && <span className="font-medium text-foreground/80">{data.author}</span>}
             {data.timestamp && (
               <>
@@ -131,13 +156,21 @@ function TextCard({ data }: { data: TextItemData }) {
                 <time>{data.timestamp}</time>
               </>
             )}
+            </div>
+            <div className="relative h-px w-full overflow-hidden rounded-full bg-gradient-to-r from-transparent via-border to-transparent">
+              <div className="absolute inset-0 opacity-70 [background:repeating-linear-gradient(90deg,transparent_0_4px,rgba(146,120,90,0.5)_4px_7px,transparent_7px_11px)]" />
+            </div>
           </div>
         )}
         <h2 className="text-xl font-bold text-foreground leading-snug group-hover:text-primary transition-colors duration-200">
-          {data.title}
+          {data.postSlug ? (
+            <Link href={`/post/${data.postSlug}`}>{data.title}</Link>
+          ) : (
+            data.title
+          )}
         </h2>
 
-        {hasSplitContent && isExpanded && (
+        {hasSplitContent && (
           <div className="flex flex-wrap gap-2 pb-1">
             {normalizedSections.map((section, index) => (
               <button
@@ -156,20 +189,17 @@ function TextCard({ data }: { data: TextItemData }) {
           </div>
         )}
 
-        <p className="whitespace-pre-wrap text-sm leading-relaxed text-foreground/80">
-          {isExpanded || !canExpand
-            ? currentSection?.content
-            : `${previewText}${(currentSection?.content?.length || 0) > 340 ? "…" : ""}`}
+        <p className={`whitespace-pre-wrap text-sm leading-relaxed text-foreground/80 ${isGreatPost ? "line-clamp-6" : ""}`}>
+          {isGreatPost ? `${previewText}…` : currentText}
         </p>
 
-        {canExpand && (
-          <button
-            type="button"
-            onClick={() => setIsExpanded((current) => !current)}
+        {isGreatPost && data.postSlug && (
+          <Link
+            href={`/post/${data.postSlug}`}
             className="inline-flex items-center rounded-md border border-border px-3 py-1 text-xs font-medium text-primary transition-colors hover:bg-primary/10"
           >
-            {isExpanded ? "Réduire" : "Développer l'article"}
-          </button>
+            Voir / Lire la suite
+          </Link>
         )}
       </div>
       <div className="absolute inset-0 rounded-2xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-[inset_0_0_15px_hsl(var(--primary)/0.05)]" />
@@ -180,7 +210,7 @@ function TextCard({ data }: { data: TextItemData }) {
 /* ===== MUSIC CARD ===== */
 function MusicCard({ data }: { data: MusicItemData }) {
   return (
-    <div className="group relative h-full flex flex-col bg-gradient-to-b from-card to-background/50 rounded-2xl p-6 border border-border/50 overflow-hidden">
+    <article className="article-card group relative flex h-full flex-col rounded-2xl border border-stone-200 p-6 shadow-sm transition-transform duration-300 hover:scale-[1.01]">
       <div className="absolute -inset-px rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none bg-[radial-gradient(circle_at_top_right,hsl(var(--secondary)/0.1),transparent)]" />
 
       <div className="relative space-y-4">
@@ -212,6 +242,8 @@ function MusicCard({ data }: { data: MusicItemData }) {
         {data.description && <p className="text-xs text-muted-foreground leading-relaxed line-clamp-3">{data.description}</p>}
         {data.duration && <p className="text-xs text-muted-foreground/70 pt-1">{data.duration}</p>}
       </div>
-    </div>
+    </article>
   );
 }
+
+const POST_PREVIEW_THRESHOLD = 420;

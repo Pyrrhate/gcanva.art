@@ -4,8 +4,9 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: 36 35% 97%;
+:root,
+[data-theme="paper"] {
+  --background: 36 24% 87%;
   --foreground: 214 21% 26%;
 
   --card: 40 33% 98%;
@@ -61,6 +62,53 @@
   --sidebar-ring: 148 19% 53%;
 }
 
+[data-theme="vectrex"] {
+  --background: 212 45% 8%;
+  --foreground: 162 30% 88%;
+
+  --card: 210 38% 12%;
+  --card-foreground: 162 30% 88%;
+
+  --popover: 210 38% 11%;
+  --popover-foreground: 162 30% 88%;
+
+  --primary: 165 73% 52%;
+  --primary-foreground: 214 43% 10%;
+
+  --secondary: 202 85% 58%;
+  --secondary-foreground: 214 43% 10%;
+
+  --muted: 214 29% 18%;
+  --muted-foreground: 160 15% 68%;
+
+  --accent: 292 74% 68%;
+  --accent-foreground: 214 43% 10%;
+
+  --border: 172 39% 30%;
+  --input: 214 29% 16%;
+  --ring: 165 73% 52%;
+
+  --glass-bg: 214 32% 14% / 0.64;
+  --glass-border: 165 73% 52% / 0.25;
+  --glass-hover: 202 85% 58% / 0.18;
+
+  --gradient-primary: linear-gradient(135deg, hsl(165 73% 52%), hsl(202 85% 58%));
+  --gradient-secondary: linear-gradient(180deg, hsl(214 43% 10%), hsl(214 35% 12%));
+
+  --glow-primary: 165 73% 52% / 0.45;
+  --glow-secondary: 202 85% 58% / 0.35;
+  --glow-accent: 292 74% 68% / 0.32;
+
+  --sidebar-background: 214 43% 10%;
+  --sidebar-foreground: 162 30% 88%;
+  --sidebar-primary: 165 73% 52%;
+  --sidebar-primary-foreground: 214 43% 10%;
+  --sidebar-accent: 202 85% 58%;
+  --sidebar-accent-foreground: 214 43% 10%;
+  --sidebar-border: 172 39% 30%;
+  --sidebar-ring: 165 73% 52%;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -80,16 +128,52 @@ body {
   position: relative;
 }
 
+body > * {
+  position: relative;
+  z-index: 1;
+}
+
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   pointer-events: none;
-  background-image: radial-gradient(rgba(74, 64, 58, 0.055) 0.8px, transparent 0.8px);
-  background-size: 3px 3px;
-  opacity: 0.38;
+  background-image: none;
+  opacity: 0;
   mix-blend-mode: multiply;
   z-index: 0;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: none;
+  opacity: 0;
+  mix-blend-mode: multiply;
+  z-index: 0;
+}
+
+[data-theme="vectrex"] body::before {
+  content: "";
+  background-image:
+    linear-gradient(rgba(22, 211, 176, 0.2) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(22, 211, 176, 0.2) 1px, transparent 1px),
+    linear-gradient(rgba(56, 189, 248, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56, 189, 248, 0.08) 1px, transparent 1px);
+  background-size: 32px 32px, 32px 32px, 8px 8px, 8px 8px;
+  opacity: 0.34;
+  mix-blend-mode: screen;
+}
+
+[data-theme="vectrex"] body::after {
+  content: "";
+  background-image: radial-gradient(circle at 20% 20%, rgba(56, 189, 248, 0.13), transparent 38%),
+    radial-gradient(circle at 75% 70%, rgba(22, 211, 176, 0.16), transparent 42%);
+  background-size: cover;
+  opacity: 0.5;
+  mix-blend-mode: screen;
 }
 
 /* ===== TYPOGRAPHIE ALCHIMISTE ===== */
@@ -406,6 +490,75 @@ a:hover::after {
 .glass-morphism:hover {
   background: var(--glass-hover);
   border-color: hsl(var(--primary));
+}
+
+.article-card {
+  position: relative;
+  isolation: isolate;
+  background-color: hsl(var(--background) / 0.92);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0));
+}
+
+[data-theme="paper"] .article-card {
+  background-color: hsl(38 36% 92% / 0.96);
+  background-image:
+    linear-gradient(168deg, rgba(255, 255, 255, 0.45), rgba(231, 214, 191, 0.34)),
+    linear-gradient(18deg, rgba(169, 139, 106, 0.08), transparent 30%),
+    linear-gradient(198deg, rgba(157, 126, 95, 0.06), transparent 32%),
+    radial-gradient(rgba(88, 72, 53, 0.02) 0.7px, transparent 0.7px);
+  background-size: 100% 100%, 100% 100%, 100% 100%, 6px 6px;
+  border-color: rgba(140, 126, 105, 0.26);
+  box-shadow: 0 8px 18px rgba(80, 66, 45, 0.08);
+}
+
+[data-theme="paper"] .article-card::before,
+[data-theme="paper"] .article-card::after {
+  content: none !important;
+}
+
+[data-theme="vectrex"] .article-card {
+  background-image: linear-gradient(
+      180deg,
+      rgba(148, 255, 228, 0.16),
+      rgba(34, 62, 73, 0.34)
+    ),
+    linear-gradient(120deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+  border-color: rgba(68, 211, 182, 0.44);
+  box-shadow: 0 12px 24px rgba(2, 12, 19, 0.36), inset 0 0 0 1px rgba(130, 245, 219, 0.08);
+  backdrop-filter: blur(14px);
+}
+
+[data-theme="paper"] body::before,
+[data-theme="paper"] body::after {
+  content: "";
+}
+
+[data-theme="paper"] body::before {
+  background-image:
+    radial-gradient(rgba(74, 64, 58, 0.075) 0.72px, transparent 0.72px),
+    radial-gradient(rgba(104, 82, 60, 0.052) 0.9px, transparent 0.9px);
+  background-size: 3px 3px, 5px 5px;
+  opacity: 0.34;
+  mix-blend-mode: multiply;
+}
+
+[data-theme="paper"] body::after {
+  content: "";
+  background-image: radial-gradient(rgba(75, 62, 47, 0.034) 0.7px, transparent 0.7px);
+  background-size: 2px 2px;
+  opacity: 0.14;
+  mix-blend-mode: multiply;
+}
+
+.header-surface {
+  background-color: hsl(38 34% 94% / 0.96);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.45), rgba(241, 231, 213, 0.32));
+  background-size: 100% 100%;
+}
+
+[data-theme="vectrex"] .header-surface {
+  background-color: hsl(var(--background));
+  background-image: none;
 }
 
 /* ===== GLOW BORDERS ===== */

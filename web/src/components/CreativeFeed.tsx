@@ -1,9 +1,17 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Grid3x3, List } from "lucide-react";
 import FeedItem, { type FeedItemProps } from "@/components/FeedItem";
+import ThemeSwitcher from "@/components/ThemeSwitcher";
+
+const NAV_LINKS = [
+  { href: "/manifeste", label: "Manifeste" },
+  { href: "/experimentation-digitale", label: "Expérimentation Digitale" },
+  { href: "/contact", label: "Contact" },
+];
 
 export interface CreativeFeedItem extends FeedItemProps {
   id: string;
@@ -28,37 +36,67 @@ export default function CreativeFeed({
   return (
     <div className="w-full min-h-screen bg-background text-foreground">
       {/* Header avec Toggle */}
-      <div className="sticky top-0 z-40 border-b border-stone-200 bg-background/90 backdrop-blur-md">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
-          <div className="flex flex-col">
-            <h1 className="text-2xl font-semibold tracking-tight text-[#2C3E50]">{headerTitle}</h1>
+      <div className="header-surface sticky top-0 z-40 border-b border-stone-200">
+        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-5 md:flex-row md:items-center md:justify-between">
+          <div className="flex flex-col gap-2">
+            <h1 className="text-2xl font-semibold tracking-tight text-foreground">{headerTitle}</h1>
             <p className="mt-1 text-sm text-muted-foreground">{headerSubtitle}</p>
             <p className="mt-1 text-xs text-muted-foreground/80">
               {viewMode === "timeline" ? "Vue linéaire" : "Vue mosaïque"}
             </p>
+            <nav
+              aria-label="Navigation principale"
+              className="mt-1 flex flex-wrap items-center gap-4"
+            >
+              {NAV_LINKS.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="text-xs font-medium tracking-wide text-muted-foreground hover:text-primary"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
           </div>
 
           {/* Toggle Button Group */}
-          <div className="flex gap-2 rounded-lg border border-stone-200 bg-card p-1 shadow-sm">
-            <Button
-              variant={viewMode === "timeline" ? "default" : "ghost"}
-              size="sm"
-              onClick={() => setViewMode("timeline")}
-              className="gap-2 transition-all duration-200"
-            >
-              <List className="w-4 h-4" />
-              <span className="hidden sm:inline">Timeline</span>
-            </Button>
+          <div className="flex flex-wrap items-center gap-2 md:justify-end">
+            <ThemeSwitcher />
+            <div className="flex items-center rounded-lg border border-stone-200 bg-card p-1 shadow-sm">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setViewMode("timeline")}
+                className={`gap-2 transition-all duration-200 active:scale-[0.98] ${
+                  viewMode === "timeline"
+                    ? "border border-primary/35 bg-primary/10 text-primary hover:bg-primary/15"
+                    : "text-muted-foreground hover:bg-muted"
+                }`}
+              >
+                <List className="w-4 h-4" />
+                <span className="hidden sm:inline">Timeline</span>
+              </Button>
 
-            <Button
-              variant={viewMode === "masonry" ? "default" : "ghost"}
-              size="sm"
-              onClick={() => setViewMode("masonry")}
-              className="gap-2 transition-all duration-200"
-            >
-              <Grid3x3 className="w-4 h-4" />
-              <span className="hidden sm:inline">Masonry</span>
-            </Button>
+              <span
+                aria-hidden="true"
+                className="mx-1 h-4 w-px bg-gradient-to-b from-transparent via-border/55 to-transparent"
+              />
+
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setViewMode("masonry")}
+                className={`gap-2 transition-all duration-200 active:scale-[0.98] ${
+                  viewMode === "masonry"
+                    ? "border border-primary/35 bg-primary/10 text-primary hover:bg-primary/15"
+                    : "text-muted-foreground hover:bg-muted"
+                }`}
+              >
+                <Grid3x3 className="w-4 h-4" />
+                <span className="hidden sm:inline">Grille</span>
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -66,11 +104,6 @@ export default function CreativeFeed({
       {/* TIMELINE VIEW */}
       {viewMode === "timeline" && (
         <div className="mx-auto max-w-2xl px-6 py-12">
-          {/* Ligne centrale ondulante */}
-          <div className="absolute left-1/2 top-24 bottom-0 w-1 -translate-x-1/2">
-            <div className="w-full h-full bg-gradient-to-b from-transparent via-primary to-transparent opacity-20 animate-pulse"></div>
-          </div>
-
           <div className="relative space-y-16">
             {items.length === 0 ? (
               <div className="flex items-center justify-center py-24">
@@ -87,25 +120,12 @@ export default function CreativeFeed({
               items.map((item, index) => (
                 <div
                   key={item.id}
-                  className="flex gap-8 items-start animate-fade-up-delay-1"
+                  className="animate-fade-up-delay-1"
                   style={{
                     animationDelay: `${index * 0.1}s`,
                   }}
                 >
-                  {/* Timeline dot */}
-                  <div className="flex flex-col items-center">
-                    <div className="w-6 h-6 rounded-full border-2 border-primary bg-background shadow-lg shadow-primary/50 animate-glow-pulse"></div>
-                    {index < items.length - 1 && (
-                      <div className="w-1 h-12 bg-gradient-to-b from-primary/40 to-transparent mt-2"></div>
-                    )}
-                  </div>
-
-                  {/* Content */}
-                  <div className="flex-1 pt-1">
-                    <div className="glass-morphism rounded-2xl border border-stone-200 bg-card p-8 shadow-sm">
-                      <FeedItem type={item.type} data={item.data} />
-                    </div>
-                  </div>
+                  <FeedItem type={item.type} data={item.data} />
                 </div>
               ))
             )}
@@ -137,9 +157,7 @@ export default function CreativeFeed({
                     animationDelay: `${(index % 3) * 0.1}s`,
                   }}
                 >
-                  <div className="glass-morphism h-full rounded-2xl border border-stone-200 bg-card p-6 shadow-sm transition-transform duration-300 hover:scale-[1.01]">
-                    <FeedItem type={item.type} data={item.data} />
-                  </div>
+                  <FeedItem type={item.type} data={item.data} />
                 </div>
               ))}
             </div>

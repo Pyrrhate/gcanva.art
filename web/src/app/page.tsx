@@ -12,8 +12,8 @@ const HOMEPAGE_HEADER_QUERY = defineQuery(/* groq */ `
 const GARDEN_NOTES_QUERY = defineQuery(/* groq */ `
   *[_type == "gardenNote"] | order(lastTendedAt desc) {
     _id,
+    "slug": coalesce(slug.current, _id),
     title,
-    confidenceLevel,
     lastTendedAt,
     displayMode,
     imageCaption,
@@ -41,8 +41,8 @@ interface HeaderData {
 
 interface GardenNoteData {
   _id: string;
+  slug: string;
   title: string;
-  confidenceLevel?: number;
   lastTendedAt?: string;
   displayMode?: "auto" | "single" | "sectioned";
   imageCaption?: string;
@@ -72,7 +72,6 @@ function mapGardenNoteToFeedItems(note: GardenNoteData): CreativeFeedItem[] {
       })
     : undefined;
 
-  const confidencePrefix = typeof note.confidenceLevel === "number" ? `[${note.confidenceLevel}%] ` : "";
   const sections = (note.sectionItems || [])
     .filter((section) => (section.contentText || "").trim().length > 0)
     .map((section) => ({
@@ -84,8 +83,13 @@ function mapGardenNoteToFeedItems(note: GardenNoteData): CreativeFeedItem[] {
     id: note._id,
     type: "text",
     data: {
-      title: `${confidencePrefix}${note.title}`,
+      title: note.title,
+      postSlug: note.slug,
       content: note.contentText || "",
+      imageSrc: note.mainImage?.asset?.url,
+      imageAlt: note.title,
+      imageCaption: note.imageCaption,
+      imageAspectRatio: note.mainImage?.asset?.metadata?.dimensions?.aspectRatio,
       author: "Garden Note",
       timestamp,
       displayMode: note.displayMode || "auto",
@@ -93,24 +97,7 @@ function mapGardenNoteToFeedItems(note: GardenNoteData): CreativeFeedItem[] {
     },
   };
 
-  const imageUrl = note.mainImage?.asset?.url;
-  if (!imageUrl) {
-    return [textItem];
-  }
-
-  const imageItem: CreativeFeedItem = {
-    id: `${note._id}-image`,
-    type: "image",
-    data: {
-      src: imageUrl,
-      alt: note.title,
-      title: note.title,
-      caption: note.imageCaption,
-      aspectRatio: note.mainImage?.asset?.metadata?.dimensions?.aspectRatio || 4 / 3,
-    },
-  };
-
-  return [imageItem, textItem];
+  return [textItem];
 }
 
 export const revalidate = 60;

@@ -3,7 +3,8 @@
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Music, Play } from "lucide-react";
+import { Music, Pause, Play } from "lucide-react";
+import { useAudioSystem } from "@/components/audio/AudioProvider";
 
 export interface FeedItemProps {
   type: "image" | "text" | "music";
@@ -212,6 +213,24 @@ function TextCard({ data }: { data: TextItemData }) {
 
 /* ===== MUSIC CARD ===== */
 function MusicCard({ data }: { data: MusicItemData }) {
+  const { currentTrack, isPlaying, playTrack, togglePlayback } = useAudioSystem();
+  const isCurrentTrack = currentTrack?.audioUrl === data.audioUrl;
+
+  const handlePlay = async () => {
+    if (!data.audioUrl) return;
+    if (isCurrentTrack) {
+      await togglePlayback();
+      return;
+    }
+
+    await playTrack({
+      title: data.title,
+      artist: data.artist,
+      audioUrl: data.audioUrl,
+      cover: data.cover,
+    });
+  };
+
   return (
     <article className="article-card group relative flex h-full flex-col rounded-2xl border border-stone-200 p-6 shadow-sm transition-transform duration-300 hover:scale-[1.01]">
       <div className="absolute -inset-px rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none bg-[radial-gradient(circle_at_top_right,hsl(var(--secondary)/0.1),transparent)]" />
@@ -227,9 +246,20 @@ function MusicCard({ data }: { data: MusicItemData }) {
               sizes="200px"
             />
             <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/40 transition-colors duration-300">
-              <button className="p-3 rounded-full bg-primary/80 hover:bg-primary text-background opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 shadow-lg shadow-primary/50">
-                <Play className="w-5 h-5 fill-current" />
-              </button>
+              {data.audioUrl && (
+                <button
+                  type="button"
+                  onClick={() => void handlePlay()}
+                  className="p-3 rounded-full bg-primary/80 hover:bg-primary text-background opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 shadow-lg shadow-primary/50"
+                  aria-label={isCurrentTrack && isPlaying ? "Mettre en pause" : "Lire le morceau"}
+                >
+                  {isCurrentTrack && isPlaying ? (
+                    <Pause className="w-5 h-5" />
+                  ) : (
+                    <Play className="w-5 h-5 fill-current" />
+                  )}
+                </button>
+              )}
             </div>
           </div>
         )}
@@ -244,6 +274,30 @@ function MusicCard({ data }: { data: MusicItemData }) {
 
         {data.description && <p className="text-xs text-muted-foreground leading-relaxed line-clamp-3">{data.description}</p>}
         {data.duration && <p className="text-xs text-muted-foreground/70 pt-1">{data.duration}</p>}
+
+        <div className="flex items-center gap-2 pt-1">
+          {data.audioUrl && (
+            <button
+              type="button"
+              onClick={() => void handlePlay()}
+              className="inline-flex items-center gap-1 rounded-md border border-border px-2.5 py-1 text-xs text-foreground hover:bg-muted"
+            >
+              {isCurrentTrack && isPlaying ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5" />}
+              {isCurrentTrack && isPlaying ? "Pause" : "Écouter"}
+            </button>
+          )}
+
+          {data.spotifyUrl && (
+            <a
+              href={data.spotifyUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center rounded-md border border-border px-2.5 py-1 text-xs text-muted-foreground hover:text-foreground hover:bg-muted"
+            >
+              Spotify
+            </a>
+          )}
+        </div>
       </div>
     </article>
   );

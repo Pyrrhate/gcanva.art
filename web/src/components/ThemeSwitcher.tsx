@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Cpu, Leaf } from "lucide-react";
 import { useTheme } from "next-themes";
+import { useAudioSystem } from "@/components/audio/AudioProvider";
 
 const THEMES = [
   { value: "paper", label: "Papier", icon: Leaf },
@@ -15,6 +16,7 @@ interface ThemeSwitcherProps {
 
 export default function ThemeSwitcher({ compact = false }: ThemeSwitcherProps) {
   const { theme, setTheme } = useTheme();
+  const { playThemeSound } = useAudioSystem();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -42,7 +44,10 @@ export default function ThemeSwitcher({ compact = false }: ThemeSwitcherProps) {
           >
             <button
               type="button"
-              onClick={() => setTheme(item.value)}
+              onClick={() => {
+                playThemeSound(item.value);
+                setTheme(item.value);
+              }}
               aria-label={item.label}
               title={item.label}
               className={`rounded-md text-xs font-medium transition-colors active:scale-[0.98] ${

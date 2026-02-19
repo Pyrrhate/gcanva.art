@@ -115,13 +115,34 @@ export async function generateMetadata({
     getSiteSettingsSeo(),
   ]);
 
-  return buildSeoMetadata({
+  const metadata = buildSeoMetadata({
     pageSeo: postSeo?.seo,
     sectionSeo: settings?.postSeo,
     fallbackTitle: postSeo?.title ? `gcanva.art — ${postSeo.title}` : "gcanva.art — Note",
     fallbackDescription: "Lecture d'une note du carnet créatif gcanva.art.",
     settings,
   });
+
+  const hasOgImage = Boolean(postSeo?.seo?.ogImage?.asset?.url || settings?.postSeo?.ogImage?.asset?.url || settings?.defaultSeo?.ogImage?.asset?.url);
+
+  if (hasOgImage) {
+    return metadata;
+  }
+
+  const dynamicOgPath = `/post/${slug}/opengraph-image`;
+
+  return {
+    ...metadata,
+    openGraph: {
+      ...metadata.openGraph,
+      images: [{ url: dynamicOgPath }],
+    },
+    twitter: {
+      ...metadata.twitter,
+      card: "summary_large_image",
+      images: [dynamicOgPath],
+    },
+  };
 }
 
 export default async function PostPage({

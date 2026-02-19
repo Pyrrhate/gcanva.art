@@ -3,6 +3,8 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   transpilePackages: ["lucide-react"],
   images: {
+    loader: "custom",
+    loaderFile: "./src/lib/sanityImageLoader.ts",
     remotePatterns: [
       {
         protocol: "https",

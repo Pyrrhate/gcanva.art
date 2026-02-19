@@ -2,6 +2,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { defineQuery } from "next-sanity";
+import SiteHeader from "@/components/SiteHeader";
 import { client } from "@/sanity/client";
 
 const POST_QUERY = defineQuery(/* groq */ `
@@ -77,13 +78,18 @@ export default async function PostPage({
   const useSections = post.displayMode === "sectioned" && sections.length > 0;
 
   return (
-    <main className="mx-auto min-h-screen max-w-4xl px-6 py-12">
-      <Link
-        href="/"
-        className="text-sm text-primary hover:underline"
-      >
-        ← Retour au jardin
-      </Link>
+    <div className="min-h-screen bg-background text-foreground">
+      <SiteHeader
+        subtitle="Lecture d'une note"
+        showViewModeControls={false}
+      />
+      <main className="mx-auto max-w-4xl px-6 py-12">
+        <Link
+          href="/"
+          className="text-sm text-primary hover:underline"
+        >
+          ← Retour au jardin
+        </Link>
 
       <header className="mt-6 space-y-3">
         <h1 className="text-balance text-4xl font-semibold text-foreground">{post.title}</h1>
@@ -110,35 +116,36 @@ export default async function PostPage({
         </figure>
       )}
 
-      {useSections ? (
-        <section className="mt-10 space-y-10">
-          <nav className="flex flex-wrap gap-2">
+        {useSections ? (
+          <section className="mt-10 space-y-10">
+            <nav className="flex flex-wrap gap-2">
+              {sections.map((section) => (
+                <a
+                  key={section.id}
+                  href={`#${section.id}`}
+                  className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground hover:border-primary/50 hover:text-primary"
+                >
+                  {section.title}
+                </a>
+              ))}
+            </nav>
             {sections.map((section) => (
-              <a
+              <article
+                id={section.id}
                 key={section.id}
-                href={`#${section.id}`}
-                className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground hover:border-primary/50 hover:text-primary"
+                className="rounded-2xl border border-border/60 bg-card/70 p-6 shadow-sm"
               >
-                {section.title}
-              </a>
+                <h2 className="mb-3 text-2xl font-semibold text-foreground">{section.title}</h2>
+                <p className="whitespace-pre-wrap text-base leading-relaxed text-foreground/90">{section.content}</p>
+              </article>
             ))}
-          </nav>
-          {sections.map((section) => (
-            <article
-              id={section.id}
-              key={section.id}
-              className="rounded-2xl border border-border/60 bg-card/70 p-6 shadow-sm"
-            >
-              <h2 className="mb-3 text-2xl font-semibold text-foreground">{section.title}</h2>
-              <p className="whitespace-pre-wrap text-base leading-relaxed text-foreground/90">{section.content}</p>
-            </article>
-          ))}
-        </section>
-      ) : (
-        <article className="mt-10 rounded-2xl border border-border/60 bg-card/70 p-6 shadow-sm">
-          <p className="whitespace-pre-wrap text-base leading-relaxed text-foreground/90">{post.contentText || ""}</p>
-        </article>
-      )}
-    </main>
+          </section>
+        ) : (
+          <article className="mt-10 rounded-2xl border border-border/60 bg-card/70 p-6 shadow-sm">
+            <p className="whitespace-pre-wrap text-base leading-relaxed text-foreground/90">{post.contentText || ""}</p>
+          </article>
+        )}
+      </main>
+    </div>
   );
 }

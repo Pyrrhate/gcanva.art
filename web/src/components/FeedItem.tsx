@@ -124,6 +124,9 @@ function TextCard({ data }: { data: TextItemData }) {
   const currentText = currentSection?.content || "";
   const isGreatPost = hasSplitContent || currentText.length > POST_PREVIEW_THRESHOLD;
   const previewText = currentText.slice(0, POST_PREVIEW_THRESHOLD).trim();
+  const textClassName = isGreatPost
+    ? "whitespace-pre-wrap text-sm leading-relaxed text-foreground/80 line-clamp-6"
+    : "mx-auto max-w-[28ch] whitespace-pre-wrap text-center text-lg font-medium leading-8 text-foreground/90";
 
   return (
     <article className="article-card group relative flex h-full flex-col rounded-2xl border border-stone-200 p-6 shadow-sm transition-transform duration-300 hover:scale-[1.01]">
@@ -189,7 +192,7 @@ function TextCard({ data }: { data: TextItemData }) {
           </div>
         )}
 
-        <p className={`whitespace-pre-wrap text-sm leading-relaxed text-foreground/80 ${isGreatPost ? "line-clamp-6" : ""}`}>
+        <p className={textClassName}>
           {isGreatPost ? `${previewText}…` : currentText}
         </p>
 
@@ -198,7 +201,7 @@ function TextCard({ data }: { data: TextItemData }) {
             href={`/post/${data.postSlug}`}
             className="inline-flex items-center rounded-md border border-border px-3 py-1 text-xs font-medium text-primary transition-colors hover:bg-primary/10"
           >
-            Voir / Lire la suite
+            Lire la suite
           </Link>
         )}
       </div>

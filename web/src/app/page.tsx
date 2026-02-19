@@ -4,7 +4,6 @@ import { client } from "@/sanity/client";
 
 const HOMEPAGE_HEADER_QUERY = defineQuery(/* groq */ `
   *[_type == "homepage"][0] {
-    "headerTitle": coalesce(feedHeaderTitle, heroTitle, "Creative Feed"),
     "headerSubtitle": coalesce(feedHeaderSubtitle, heroSubtitle, "Un flux vivant d'idées et d'explorations créatives")
   }
 `);
@@ -35,7 +34,6 @@ const GARDEN_NOTES_QUERY = defineQuery(/* groq */ `
 `);
 
 interface HeaderData {
-  headerTitle?: string;
   headerSubtitle?: string;
 }
 
@@ -113,7 +111,6 @@ export default async function Page() {
   return (
     <CreativeFeed
       items={feedItems}
-      headerTitle={header?.headerTitle || "Creative Feed"}
       headerSubtitle={header?.headerSubtitle || "Un flux vivant d'idées et d'explorations créatives"}
     />
   );

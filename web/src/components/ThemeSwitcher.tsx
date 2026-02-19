@@ -6,7 +6,7 @@ import { useTheme } from "next-themes";
 
 const THEMES = [
   { value: "paper", label: "Papier", icon: Leaf },
-  { value: "vectrex", label: "Vectrex", icon: Cpu },
+  { value: "vectrex", label: "Console", icon: Cpu },
 ] as const;
 
 interface ThemeSwitcherProps {

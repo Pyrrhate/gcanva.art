@@ -15,12 +15,25 @@ export default async function SiteFooter() {
   return (
     <footer className="header-surface border-t border-border/65 px-6 py-6">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-3 text-sm text-muted-foreground md:flex-row md:items-center md:justify-between">
-        <a
-          href={`mailto:${CONTACT_EMAIL}`}
-          className="w-fit font-medium text-foreground hover:text-primary"
-        >
-          Contact: {CONTACT_EMAIL}
-        </a>
+        <div className="space-y-1">
+          <a
+            href={`mailto:${CONTACT_EMAIL}`}
+            className="w-fit font-medium text-foreground hover:text-primary"
+          >
+            Contact: {CONTACT_EMAIL}
+          </a>
+          <p className="text-xs text-muted-foreground/90">
+            Site propulsé par Next.js + conception web par 
+            <a
+              href="https://base.gcanva.art"
+              target="_blank"
+              rel="noreferrer"
+              className="ml-1 text-foreground hover:text-primary"
+            >
+              base.gcanva.art
+            </a>
+          </p>
+        </div>
 
         {socialLinks.length > 0 && (
           <nav aria-label="Réseaux sociaux" className="flex flex-wrap items-center gap-3">

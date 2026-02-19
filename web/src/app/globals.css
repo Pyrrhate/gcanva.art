@@ -122,9 +122,16 @@ body {
   font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
   font-feature-settings: "rlig" 1, "calt" 1;
   line-height: 1.6;
+  padding-top: 220px;
 
   transition: background-color 0.45s ease, color 0.45s ease;
   position: relative;
+}
+
+@media (min-width: 768px) {
+  body {
+    padding-top: 170px;
+  }
 }
 
 body > :not(.app-background) {

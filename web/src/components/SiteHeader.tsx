@@ -33,19 +33,45 @@ export default function SiteHeader({
 }: SiteHeaderProps) {
   const pathname = usePathname();
   const [isCompact, setIsCompact] = useState(false);
+  const [isMobilePortrait, setIsMobilePortrait] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const controlsInteractive = showViewModeControls && Boolean(onViewModeChange);
+  const effectiveCompact = isCompact;
 
   useEffect(() => {
+    const COMPACT_ENTER_THRESHOLD = 56;
+    const COMPACT_EXIT_THRESHOLD = 2;
+
     const updateCompactState = () => {
-      setIsCompact(window.scrollY > 36);
+      setIsCompact((prev) => {
+        const scrollY = window.scrollY;
+
+        if (scrollY > COMPACT_ENTER_THRESHOLD) {
+          return true;
+        }
+
+        if (scrollY <= COMPACT_EXIT_THRESHOLD) {
+          return false;
+        }
+
+        return prev;
+      });
+    };
+
+    const updateMobilePortrait = () => {
+      setIsMobilePortrait(window.innerWidth < 768 && window.matchMedia("(orientation: portrait)").matches);
     };
 
     updateCompactState();
+    updateMobilePortrait();
     window.addEventListener("scroll", updateCompactState, { passive: true });
+    window.addEventListener("resize", updateMobilePortrait);
+    window.addEventListener("orientationchange", updateMobilePortrait);
 
     return () => {
       window.removeEventListener("scroll", updateCompactState);
+      window.removeEventListener("resize", updateMobilePortrait);
+      window.removeEventListener("orientationchange", updateMobilePortrait);
     };
   }, []);
 
@@ -54,32 +80,49 @@ export default function SiteHeader({
   }, [pathname]);
 
   return (
-    <header className="header-surface sticky top-0 z-40 border-b border-border/65">
+    <header className="header-surface fixed inset-x-0 top-0 z-40 border-b border-border/65">
       <div
-        className={`mx-auto flex max-w-7xl px-6 transition-all duration-300 ${
-          isCompact
-            ? "flex-col gap-2 py-2 md:flex-row md:items-center md:justify-between"
+        className={`mx-auto flex max-w-7xl px-6 transition-[padding] duration-200 ${
+          effectiveCompact
+            ? "min-h-[56px] flex-col gap-0 py-2 md:min-h-0 md:flex-row md:items-center md:justify-between"
             : "flex-col gap-4 py-5 md:flex-row md:items-center md:justify-between"
         }`}
       >
-        <div className="relative z-20 flex w-full flex-col gap-2 md:w-auto">
+        <div className={`relative z-20 flex w-full flex-col md:w-auto ${effectiveCompact ? "gap-0" : "gap-2"}`}>
           <div className="flex items-center justify-between gap-3">
             <Link
               href="/"
-              className={`w-fit font-semibold tracking-tight text-foreground transition-all duration-300 [font-family:var(--font-brand-hand),cursive] ${
-                isCompact ? "h-0 overflow-hidden text-[0px] opacity-0" : "text-3xl opacity-100"
+              tabIndex={effectiveCompact ? -1 : undefined}
+              className={`w-fit text-3xl font-semibold tracking-tight text-foreground [font-family:var(--font-brand-hand),cursive] ${
+                effectiveCompact
+                  ? "pointer-events-none absolute -left-[999em] -top-[999em] h-px w-px overflow-hidden whitespace-nowrap"
+                  : ""
               }`}
             >
               {siteTitle}
             </Link>
           </div>
-          <p className={`mt-1 text-sm text-muted-foreground transition-all duration-300 ${isCompact ? "hidden" : "block"}`}>{subtitle}</p>
-          <p className={`mt-1 text-xs text-muted-foreground/80 transition-all duration-300 ${isCompact ? "hidden" : "block"}`}>
+          <p
+            className={`text-sm text-muted-foreground ${
+              effectiveCompact
+                ? "pointer-events-none absolute -left-[999em] -top-[999em] h-px w-px overflow-hidden whitespace-nowrap"
+                : "mt-1"
+            }`}
+          >
+            {subtitle}
+          </p>
+          <p
+            className={`text-xs text-muted-foreground/80 ${
+              effectiveCompact
+                ? "pointer-events-none absolute -left-[999em] -top-[999em] h-px w-px overflow-hidden whitespace-nowrap"
+                : "mt-1"
+            }`}
+          >
             {controlsInteractive ? (viewMode === "timeline" ? "Vue linéaire" : "Vue mosaïque") : "Vue éditoriale"}
           </p>
           <nav
             aria-label="Navigation principale"
-            className={`hidden flex-wrap items-center gap-2 md:flex ${isCompact ? "mt-0" : "mt-1"}`}
+            className={`hidden flex-wrap items-center gap-2 md:flex ${effectiveCompact ? "mt-0" : "mt-1"}`}
           >
             {NAV_LINKS.map((item) => {
               const isActive =
@@ -103,43 +146,45 @@ export default function SiteHeader({
         </div>
 
         <div className="flex w-full flex-nowrap items-center justify-end gap-2 md:w-auto md:justify-end">
-          <ThemeSwitcher compact={isCompact} />
-          <div className="flex items-center rounded-lg border border-border/70 bg-card/80 p-0.5 shadow-sm">
-            <Button
-              variant="ghost"
-              size="sm"
-              disabled={!controlsInteractive}
-              onClick={() => onViewModeChange?.("timeline")}
-              className={`gap-1 px-1.5 py-1 transition-all duration-200 ${
-                viewMode === "timeline"
-                  ? "border border-primary/35 bg-primary/10 text-primary hover:bg-primary/15"
-                  : "text-muted-foreground hover:bg-muted"
-              } ${!controlsInteractive ? "cursor-not-allowed opacity-50" : "active:scale-[0.98]"}`}
-            >
-              <List className="h-3.5 w-3.5" />
-              <span className={isCompact ? "sr-only" : "hidden sm:inline"}>Timeline</span>
-            </Button>
+          <ThemeSwitcher compact={effectiveCompact} />
+          {!isMobilePortrait && (
+            <div className="flex items-center rounded-lg border border-border/70 bg-card/80 p-0.5 shadow-sm">
+              <Button
+                variant="ghost"
+                size="sm"
+                disabled={!controlsInteractive}
+                onClick={() => onViewModeChange?.("timeline")}
+                className={`gap-1 px-1.5 py-1 transition-all duration-200 ${
+                  viewMode === "timeline"
+                    ? "border border-primary/35 bg-primary/10 text-primary hover:bg-primary/15"
+                    : "text-muted-foreground hover:bg-muted"
+                } ${!controlsInteractive ? "cursor-not-allowed opacity-50" : "active:scale-[0.98]"}`}
+              >
+                <List className="h-3.5 w-3.5" />
+                <span className={effectiveCompact ? "sr-only" : "hidden sm:inline"}>Timeline</span>
+              </Button>
 
-            <span
-              aria-hidden="true"
-              className="mx-1 h-4 w-px bg-gradient-to-b from-transparent via-border/55 to-transparent"
-            />
+              <span
+                aria-hidden="true"
+                className="mx-1 h-4 w-px bg-gradient-to-b from-transparent via-border/55 to-transparent"
+              />
 
-            <Button
-              variant="ghost"
-              size="sm"
-              disabled={!controlsInteractive}
-              onClick={() => onViewModeChange?.("masonry")}
-              className={`gap-1 px-1.5 py-1 transition-all duration-200 ${
-                viewMode === "masonry"
-                  ? "border border-primary/35 bg-primary/10 text-primary hover:bg-primary/15"
-                  : "text-muted-foreground hover:bg-muted"
-              } ${!controlsInteractive ? "cursor-not-allowed opacity-50" : "active:scale-[0.98]"}`}
-            >
-              <Grid3x3 className="h-3.5 w-3.5" />
-              <span className={isCompact ? "sr-only" : "hidden sm:inline"}>Grille</span>
-            </Button>
-          </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                disabled={!controlsInteractive}
+                onClick={() => onViewModeChange?.("masonry")}
+                className={`gap-1 px-1.5 py-1 transition-all duration-200 ${
+                  viewMode === "masonry"
+                    ? "border border-primary/35 bg-primary/10 text-primary hover:bg-primary/15"
+                    : "text-muted-foreground hover:bg-muted"
+                } ${!controlsInteractive ? "cursor-not-allowed opacity-50" : "active:scale-[0.98]"}`}
+              >
+                <Grid3x3 className="h-3.5 w-3.5" />
+                <span className={effectiveCompact ? "sr-only" : "hidden sm:inline"}>Grille</span>
+              </Button>
+            </div>
+          )}
 
           <Button
             type="button"

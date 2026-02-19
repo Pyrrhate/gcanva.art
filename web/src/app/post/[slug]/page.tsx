@@ -1,9 +1,12 @@
 import Image from "next/image";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { defineQuery } from "next-sanity";
 import SiteHeader from "@/components/SiteHeader";
+import PostGallery from "@/components/PostGallery";
 import { client } from "@/sanity/client";
+import { buildSeoMetadata, getSiteSettingsSeo, type SeoData } from "@/sanity/seo";
 
 const POST_QUERY = defineQuery(/* groq */ `
   *[_type == "gardenNote" && (slug.current == $slug || _id == $slug)][0] {
@@ -13,6 +16,18 @@ const POST_QUERY = defineQuery(/* groq */ `
     lastTendedAt,
     displayMode,
     imageCaption,
+    gallery[] {
+      alt,
+      caption,
+      image {
+        asset-> {
+          url,
+          metadata {
+            dimensions { aspectRatio }
+          }
+        }
+      }
+    },
     mainImage {
       asset->{
         url,
@@ -29,6 +44,25 @@ const POST_QUERY = defineQuery(/* groq */ `
   }
 `);
 
+const POST_SEO_QUERY = defineQuery(/* groq */ `
+  *[_type == "gardenNote" && (slug.current == $slug || _id == $slug)][0] {
+    title,
+    seo {
+      title,
+      description,
+      keywords,
+      canonicalUrl,
+      noIndex,
+      ogImage { asset->{url} }
+    }
+  }
+`);
+
+interface PostSeoData {
+  title?: string;
+  seo?: SeoData;
+}
+
 interface PostData {
   _id: string;
   title: string;
@@ -36,6 +70,20 @@ interface PostData {
   lastTendedAt?: string;
   displayMode?: "auto" | "single" | "sectioned";
   imageCaption?: string;
+  gallery?: Array<{
+    alt?: string;
+    caption?: string;
+    image?: {
+      asset?: {
+        url?: string;
+        metadata?: {
+          dimensions?: {
+            aspectRatio?: number;
+          };
+        };
+      };
+    };
+  }>;
   mainImage?: {
     asset?: {
       url?: string;
@@ -55,13 +103,37 @@ interface PostData {
 
 export const revalidate = 60;
 
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+
+  const [postSeo, settings] = await Promise.all([
+    client.fetch<PostSeoData | null>(POST_SEO_QUERY, { slug }),
+    getSiteSettingsSeo(),
+  ]);
+
+  return buildSeoMetadata({
+    pageSeo: postSeo?.seo,
+    sectionSeo: settings?.postSeo,
+    fallbackTitle: postSeo?.title ? `gcanva.art — ${postSeo.title}` : "gcanva.art — Note",
+    fallbackDescription: "Lecture d'une note du carnet créatif gcanva.art.",
+    settings,
+  });
+}
+
 export default async function PostPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = await client.fetch<PostData | null>(POST_QUERY, { slug });
+  const [post, settings] = await Promise.all([
+    client.fetch<PostData | null>(POST_QUERY, { slug }),
+    getSiteSettingsSeo(),
+  ]);
 
   if (!post) {
     notFound();
@@ -76,10 +148,19 @@ export default async function PostPage({
     }));
 
   const useSections = post.displayMode === "sectioned" && sections.length > 0;
+  const galleryImages = (post.gallery || [])
+    .map((item) => ({
+      url: item.image?.asset?.url || "",
+      alt: item.alt || post.title,
+      caption: item.caption,
+      aspectRatio: item.image?.asset?.metadata?.dimensions?.aspectRatio,
+    }))
+    .filter((item) => item.url.length > 0);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <SiteHeader
+        siteTitle={settings?.brandTitle || settings?.siteName || "gcanva.art"}
         subtitle="Lecture d'une note"
         showViewModeControls={false}
       />
@@ -88,7 +169,7 @@ export default async function PostPage({
           href="/"
           className="text-sm text-primary hover:underline"
         >
-          ← Retour au jardin
+          ← Retour au carnet
         </Link>
 
       <header className="mt-6 space-y-3">
@@ -145,6 +226,8 @@ export default async function PostPage({
             <p className="whitespace-pre-wrap text-base leading-relaxed text-foreground/90">{post.contentText || ""}</p>
           </article>
         )}
+
+        <PostGallery images={galleryImages} />
       </main>
     </div>
   );

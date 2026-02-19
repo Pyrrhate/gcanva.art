@@ -1,8 +1,9 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Grid3x3, List } from "lucide-react";
+import { Grid3x3, List, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
 
@@ -16,6 +17,7 @@ const NAV_LINKS = [
 type ViewMode = "timeline" | "masonry";
 
 interface SiteHeaderProps {
+  siteTitle?: string;
   subtitle?: string;
   viewMode?: ViewMode;
   onViewModeChange?: (mode: ViewMode) => void;
@@ -23,31 +25,61 @@ interface SiteHeaderProps {
 }
 
 export default function SiteHeader({
+  siteTitle = "gcanva.art",
   subtitle = "Un flux vivant d'idées et d'explorations créatives",
   viewMode = "timeline",
   onViewModeChange,
   showViewModeControls = true,
 }: SiteHeaderProps) {
   const pathname = usePathname();
+  const [isCompact, setIsCompact] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const controlsInteractive = showViewModeControls && Boolean(onViewModeChange);
+
+  useEffect(() => {
+    const updateCompactState = () => {
+      setIsCompact(window.scrollY > 36);
+    };
+
+    updateCompactState();
+    window.addEventListener("scroll", updateCompactState, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", updateCompactState);
+    };
+  }, []);
+
+  useEffect(() => {
+    setMobileNavOpen(false);
+  }, [pathname]);
 
   return (
     <header className="header-surface sticky top-0 z-40 border-b border-border/65">
-      <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-5 md:flex-row md:items-center md:justify-between">
-        <div className="flex flex-col gap-2">
-          <Link
-            href="/"
-            className="w-fit text-3xl font-semibold tracking-tight text-foreground [font-family:ui-serif,Georgia,Cambria,Times_New_Roman,Times,serif]"
-          >
-            gcanva.art
-          </Link>
-          <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>
-          <p className="mt-1 text-xs text-muted-foreground/80">
+      <div
+        className={`mx-auto flex max-w-7xl px-6 transition-all duration-300 ${
+          isCompact
+            ? "flex-col gap-2 py-2 md:flex-row md:items-center md:justify-between"
+            : "flex-col gap-4 py-5 md:flex-row md:items-center md:justify-between"
+        }`}
+      >
+        <div className="relative z-20 flex w-full flex-col gap-2 md:w-auto">
+          <div className="flex items-center justify-between gap-3">
+            <Link
+              href="/"
+              className={`w-fit font-semibold tracking-tight text-foreground transition-all duration-300 [font-family:var(--font-brand-hand),cursive] ${
+                isCompact ? "h-0 overflow-hidden text-[0px] opacity-0" : "text-3xl opacity-100"
+              }`}
+            >
+              {siteTitle}
+            </Link>
+          </div>
+          <p className={`mt-1 text-sm text-muted-foreground transition-all duration-300 ${isCompact ? "hidden" : "block"}`}>{subtitle}</p>
+          <p className={`mt-1 text-xs text-muted-foreground/80 transition-all duration-300 ${isCompact ? "hidden" : "block"}`}>
             {controlsInteractive ? (viewMode === "timeline" ? "Vue linéaire" : "Vue mosaïque") : "Vue éditoriale"}
           </p>
           <nav
             aria-label="Navigation principale"
-            className="mt-1 flex flex-wrap items-center gap-4"
+            className={`hidden flex-wrap items-center gap-2 md:flex ${isCompact ? "mt-0" : "mt-1"}`}
           >
             {NAV_LINKS.map((item) => {
               const isActive =
@@ -70,22 +102,22 @@ export default function SiteHeader({
           </nav>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 md:justify-end">
-          <ThemeSwitcher />
-          <div className="flex items-center rounded-lg border border-border/70 bg-card/80 p-1 shadow-sm">
+        <div className="flex w-full flex-nowrap items-center justify-end gap-2 md:w-auto md:justify-end">
+          <ThemeSwitcher compact={isCompact} />
+          <div className="flex items-center rounded-lg border border-border/70 bg-card/80 p-0.5 shadow-sm">
             <Button
               variant="ghost"
               size="sm"
               disabled={!controlsInteractive}
               onClick={() => onViewModeChange?.("timeline")}
-              className={`gap-2 transition-all duration-200 ${
+              className={`gap-1 px-1.5 py-1 transition-all duration-200 ${
                 viewMode === "timeline"
                   ? "border border-primary/35 bg-primary/10 text-primary hover:bg-primary/15"
                   : "text-muted-foreground hover:bg-muted"
               } ${!controlsInteractive ? "cursor-not-allowed opacity-50" : "active:scale-[0.98]"}`}
             >
-              <List className="h-4 w-4" />
-              <span className="hidden sm:inline">Timeline</span>
+              <List className="h-3.5 w-3.5" />
+              <span className={isCompact ? "sr-only" : "hidden sm:inline"}>Timeline</span>
             </Button>
 
             <span
@@ -98,18 +130,59 @@ export default function SiteHeader({
               size="sm"
               disabled={!controlsInteractive}
               onClick={() => onViewModeChange?.("masonry")}
-              className={`gap-2 transition-all duration-200 ${
+              className={`gap-1 px-1.5 py-1 transition-all duration-200 ${
                 viewMode === "masonry"
                   ? "border border-primary/35 bg-primary/10 text-primary hover:bg-primary/15"
                   : "text-muted-foreground hover:bg-muted"
               } ${!controlsInteractive ? "cursor-not-allowed opacity-50" : "active:scale-[0.98]"}`}
             >
-              <Grid3x3 className="h-4 w-4" />
-              <span className="hidden sm:inline">Grille</span>
+              <Grid3x3 className="h-3.5 w-3.5" />
+              <span className={isCompact ? "sr-only" : "hidden sm:inline"}>Grille</span>
             </Button>
           </div>
+
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            aria-label={mobileNavOpen ? "Fermer la navigation" : "Ouvrir la navigation"}
+            aria-expanded={mobileNavOpen}
+            onClick={() => setMobileNavOpen((prev) => !prev)}
+            className="h-8 w-8 p-0 md:hidden"
+          >
+            {mobileNavOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+          </Button>
         </div>
       </div>
+
+      {mobileNavOpen && (
+        <nav
+          aria-label="Navigation mobile"
+          className="border-t border-border/60 px-6 py-3 md:hidden"
+        >
+          <div className="flex flex-col gap-1">
+            {NAV_LINKS.map((item) => {
+              const isActive =
+                item.href === "/"
+                  ? pathname === "/"
+                  : pathname === item.href || pathname.startsWith(`${item.href}/`);
+
+              return (
+                <Link
+                  key={`mobile-${item.href}`}
+                  href={item.href}
+                  onClick={() => setMobileNavOpen(false)}
+                  className={`site-nav-link w-fit text-sm font-medium ${
+                    isActive ? "is-active text-primary" : "text-muted-foreground hover:text-primary"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+          </div>
+        </nav>
+      )}
     </header>
   );
 }

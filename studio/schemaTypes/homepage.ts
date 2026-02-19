@@ -61,6 +61,13 @@ export default defineType({
       validation: (Rule) => Rule.max(240),
     }),
 
+    defineField({
+      name: 'seo',
+      title: 'SEO',
+      type: 'seo',
+      description: 'Module SEO spécifique à la page d\'accueil.',
+    }),
+
     // ===== STACK SECTION =====
     defineField({
       name: 'stackTitle',

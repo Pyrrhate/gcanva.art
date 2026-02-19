@@ -19,6 +19,12 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'seo',
+      title: 'SEO',
+      type: 'seo',
+      description: 'Module SEO pour la page dédiée de cette note.',
+    }),
+    defineField({
       name: 'gardeningStatus',
       title: 'Gardening Status',
       type: 'string',
@@ -58,6 +64,52 @@ export default defineType({
       title: 'Image Caption',
       type: 'string',
       validation: (Rule) => Rule.max(180),
+    }),
+    defineField({
+      name: 'gallery',
+      title: 'Gallery (optional)',
+      type: 'array',
+      description: 'Galerie d\'images affichée dans la page longue de la note.',
+      of: [
+        defineArrayMember({
+          type: 'object',
+          fields: [
+            defineField({
+              name: 'image',
+              title: 'Image',
+              type: 'image',
+              options: {hotspot: true},
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: 'alt',
+              title: 'Alternative Text',
+              type: 'string',
+              validation: (Rule) => Rule.required().min(3).max(180),
+            }),
+            defineField({
+              name: 'caption',
+              title: 'Caption',
+              type: 'string',
+              validation: (Rule) => Rule.max(180),
+            }),
+          ],
+          preview: {
+            select: {
+              title: 'caption',
+              media: 'image',
+              subtitle: 'alt',
+            },
+            prepare({title, media, subtitle}) {
+              return {
+                title: title || 'Image de galerie',
+                subtitle,
+                media,
+              }
+            },
+          },
+        }),
+      ],
     }),
     defineField({
       name: 'content',

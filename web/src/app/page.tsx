@@ -1,10 +1,20 @@
+import type { Metadata } from "next";
 import {defineQuery} from "next-sanity";
 import CreativeFeed, { type CreativeFeedItem } from "@/components/CreativeFeed";
 import { client } from "@/sanity/client";
+import { buildSeoMetadata, getSiteSettingsSeo, type SeoData } from "@/sanity/seo";
 
 const HOMEPAGE_HEADER_QUERY = defineQuery(/* groq */ `
   *[_type == "homepage"][0] {
-    "headerSubtitle": coalesce(feedHeaderSubtitle, heroSubtitle, "Un flux vivant d'idées et d'explorations créatives")
+    "headerSubtitle": coalesce(feedHeaderSubtitle, heroSubtitle, "Un flux vivant d'idées et d'explorations créatives"),
+    seo {
+      title,
+      description,
+      keywords,
+      canonicalUrl,
+      noIndex,
+      ogImage { asset->{url} }
+    }
   }
 `);
 
@@ -35,6 +45,7 @@ const GARDEN_NOTES_QUERY = defineQuery(/* groq */ `
 
 interface HeaderData {
   headerSubtitle?: string;
+  seo?: SeoData;
 }
 
 interface GardenNoteData {
@@ -100,10 +111,26 @@ function mapGardenNoteToFeedItems(note: GardenNoteData): CreativeFeedItem[] {
 
 export const revalidate = 60;
 
+export async function generateMetadata(): Promise<Metadata> {
+  const [homepage, settings] = await Promise.all([
+    client.fetch<HeaderData | null>(HOMEPAGE_HEADER_QUERY),
+    getSiteSettingsSeo(),
+  ]);
+
+  return buildSeoMetadata({
+    pageSeo: homepage?.seo,
+    sectionSeo: settings?.homeSeo,
+    fallbackTitle: "gcanva.art — Carnet",
+    fallbackDescription: "Carnet créatif entre alchimie organique et énergie électronique.",
+    settings,
+  });
+}
+
 export default async function Page() {
-  const [header, notes] = await Promise.all([
+  const [header, notes, settings] = await Promise.all([
     client.fetch<HeaderData | null>(HOMEPAGE_HEADER_QUERY),
     client.fetch<GardenNoteData[]>(GARDEN_NOTES_QUERY),
+    getSiteSettingsSeo(),
   ]);
 
   const feedItems = (notes || []).flatMap(mapGardenNoteToFeedItems);
@@ -111,6 +138,7 @@ export default async function Page() {
   return (
     <CreativeFeed
       items={feedItems}
+      siteTitle={settings?.brandTitle || settings?.siteName || "gcanva.art"}
       headerSubtitle={header?.headerSubtitle || "Un flux vivant d'idées et d'explorations créatives"}
     />
   );

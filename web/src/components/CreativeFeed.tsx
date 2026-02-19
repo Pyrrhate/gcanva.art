@@ -11,6 +11,7 @@ export interface CreativeFeedItem extends FeedItemProps {
 
 interface CreativeFeedProps {
   items?: CreativeFeedItem[];
+  siteTitle?: string;
   headerSubtitle?: string;
 }
 
@@ -18,6 +19,7 @@ type ViewMode = "timeline" | "masonry";
 
 export default function CreativeFeed({
   items = [],
+  siteTitle = "gcanva.art",
   headerSubtitle = "Un flux vivant d'idées et d'explorations créatives",
 }: CreativeFeedProps) {
   const [viewMode, setViewMode] = useState<ViewMode>("timeline");
@@ -25,6 +27,7 @@ export default function CreativeFeed({
   return (
     <div className="w-full min-h-screen bg-background text-foreground">
       <SiteHeader
+        siteTitle={siteTitle}
         subtitle={headerSubtitle}
         viewMode={viewMode}
         onViewModeChange={setViewMode}

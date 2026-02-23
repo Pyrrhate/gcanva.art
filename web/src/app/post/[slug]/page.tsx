@@ -5,6 +5,7 @@ import Link from "next/link";
 import { defineQuery } from "next-sanity";
 import SiteHeader from "@/components/SiteHeader";
 import PostGallery from "@/components/PostGallery";
+import PostLikeButton from "@/components/PostLikeButton";
 import { client } from "@/sanity/client";
 import { buildSeoMetadata, getSiteSettingsSeo, type SeoData } from "@/sanity/seo";
 
@@ -13,6 +14,7 @@ const POST_QUERY = defineQuery(/* groq */ `
     _id,
     title,
     "slug": coalesce(slug.current, _id),
+    tags,
     lastTendedAt,
     displayMode,
     imageCaption,
@@ -23,6 +25,7 @@ const POST_QUERY = defineQuery(/* groq */ `
         asset-> {
           url,
           metadata {
+            lqip,
             dimensions { aspectRatio }
           }
         }
@@ -32,6 +35,7 @@ const POST_QUERY = defineQuery(/* groq */ `
       asset->{
         url,
         metadata {
+          lqip,
           dimensions { aspectRatio }
         }
       }
@@ -67,6 +71,7 @@ interface PostData {
   _id: string;
   title: string;
   slug: string;
+  tags?: string[];
   lastTendedAt?: string;
   displayMode?: "auto" | "single" | "sectioned";
   imageCaption?: string;
@@ -77,6 +82,7 @@ interface PostData {
       asset?: {
         url?: string;
         metadata?: {
+          lqip?: string;
           dimensions?: {
             aspectRatio?: number;
           };
@@ -88,6 +94,7 @@ interface PostData {
     asset?: {
       url?: string;
       metadata?: {
+        lqip?: string;
         dimensions?: {
           aspectRatio?: number;
         };
@@ -174,6 +181,7 @@ export default async function PostPage({
       url: item.image?.asset?.url || "",
       alt: item.alt || post.title,
       caption: item.caption,
+      blurDataURL: item.image?.asset?.metadata?.lqip,
       aspectRatio: item.image?.asset?.metadata?.dimensions?.aspectRatio,
     }))
     .filter((item) => item.url.length > 0);
@@ -194,10 +202,25 @@ export default async function PostPage({
         </Link>
 
       <header className="mt-6 space-y-3">
-        <h1 className="text-balance text-4xl font-semibold text-foreground">{post.title}</h1>
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <h1 className="text-balance text-4xl font-semibold text-foreground">{post.title}</h1>
+          <PostLikeButton postId={post._id} postSlug={post.slug} />
+        </div>
         <p className="text-sm text-muted-foreground">
           {post.lastTendedAt ? new Date(post.lastTendedAt).toLocaleDateString("fr-FR") : ""}
         </p>
+        {!!post.tags?.length && (
+          <div className="flex flex-wrap gap-2">
+            {post.tags.map((tag) => (
+              <span
+                key={`${post._id}-${tag}`}
+                className="rounded-full border border-border px-2.5 py-1 text-[11px] text-muted-foreground"
+              >
+                #{tag}
+              </span>
+            ))}
+          </div>
+        )}
       </header>
 
       {post.mainImage?.asset?.url && (
@@ -210,8 +233,18 @@ export default async function PostPage({
               src={post.mainImage.asset.url}
               alt={post.title}
               fill
+              draggable={false}
+              onContextMenu={(event) => event.preventDefault()}
               className="object-cover"
               sizes="(max-width: 1024px) 100vw, 900px"
+              placeholder={post.mainImage.asset.metadata?.lqip ? "blur" : "empty"}
+              blurDataURL={post.mainImage.asset.metadata?.lqip}
+            />
+            <div
+              className="absolute inset-0"
+              onContextMenu={(event) => event.preventDefault()}
+              onDragStart={(event) => event.preventDefault()}
+              aria-hidden="true"
             />
           </div>
           {post.imageCaption && <figcaption className="mt-3 text-sm text-muted-foreground">{post.imageCaption}</figcaption>}

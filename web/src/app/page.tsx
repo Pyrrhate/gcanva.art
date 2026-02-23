@@ -25,6 +25,7 @@ const GARDEN_NOTES_QUERY = defineQuery(/* groq */ `
     title,
     lastTendedAt,
     displayMode,
+    tags,
     imageCaption,
     mainImage {
       asset->{
@@ -52,6 +53,7 @@ interface GardenNoteData {
   _id: string;
   slug: string;
   title: string;
+  tags?: string[];
   lastTendedAt?: string;
   displayMode?: "auto" | "single" | "sectioned";
   imageCaption?: string;
@@ -59,6 +61,7 @@ interface GardenNoteData {
     asset?: {
       url?: string;
       metadata?: {
+        lqip?: string;
         dimensions?: {
           aspectRatio?: number;
         };
@@ -99,7 +102,10 @@ function mapGardenNoteToFeedItems(note: GardenNoteData): CreativeFeedItem[] {
       imageAlt: note.title,
       imageCaption: note.imageCaption,
       imageAspectRatio: note.mainImage?.asset?.metadata?.dimensions?.aspectRatio,
+      imageBlurDataURL: note.mainImage?.asset?.metadata?.lqip,
       author: "Garden Note",
+      postId: note._id,
+      tags: note.tags,
       timestamp,
       displayMode: note.displayMode || "auto",
       sections,

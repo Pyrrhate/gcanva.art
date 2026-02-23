@@ -8,7 +8,7 @@ function withSearchParams(url: URL, params: Record<string, string>) {
 }
 
 export default function sanityImageLoader({ src, width, quality }: ImageLoaderProps) {
-  const safeQuality = quality || 75;
+  const safeQuality = quality || 70;
 
   if (src.startsWith("http://") || src.startsWith("https://")) {
     try {

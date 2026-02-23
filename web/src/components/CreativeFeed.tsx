@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import FeedItem, { type FeedItemProps } from "@/components/FeedItem";
 import SiteHeader from "@/components/SiteHeader";
 
@@ -23,6 +23,31 @@ export default function CreativeFeed({
   headerSubtitle = "Un flux vivant d'idées et d'explorations créatives",
 }: CreativeFeedProps) {
   const [viewMode, setViewMode] = useState<ViewMode>("timeline");
+  const [activeTag, setActiveTag] = useState<string>("all");
+
+  const availableTags = useMemo(() => {
+    const tags = new Set<string>();
+
+    for (const item of items) {
+      if (item.type !== "text") continue;
+      const textData = item.data as FeedItemProps["data"] & { tags?: string[] };
+      for (const tag of textData.tags || []) {
+        if (tag) tags.add(tag);
+      }
+    }
+
+    return Array.from(tags);
+  }, [items]);
+
+  const filteredItems = useMemo(() => {
+    if (activeTag === "all") return items;
+
+    return items.filter((item) => {
+      if (item.type !== "text") return true;
+      const textData = item.data as FeedItemProps["data"] & { tags?: string[] };
+      return (textData.tags || []).includes(activeTag);
+    });
+  }, [activeTag, items]);
 
   return (
     <div className="w-full min-h-screen bg-background text-foreground">
@@ -34,11 +59,41 @@ export default function CreativeFeed({
         showViewModeControls
       />
 
+      {availableTags.length > 0 && (
+        <div className="mx-auto flex w-full max-w-7xl flex-wrap gap-2 px-6 pt-4">
+          <button
+            type="button"
+            onClick={() => setActiveTag("all")}
+            className={`rounded-full border px-3 py-1 text-xs transition-colors ${
+              activeTag === "all"
+                ? "border-primary bg-primary/10 text-primary"
+                : "border-border text-muted-foreground hover:border-primary/40"
+            }`}
+          >
+            Tous
+          </button>
+          {availableTags.map((tag) => (
+            <button
+              key={tag}
+              type="button"
+              onClick={() => setActiveTag(tag)}
+              className={`rounded-full border px-3 py-1 text-xs transition-colors ${
+                activeTag === tag
+                  ? "border-primary bg-primary/10 text-primary"
+                  : "border-border text-muted-foreground hover:border-primary/40"
+              }`}
+            >
+              #{tag}
+            </button>
+          ))}
+        </div>
+      )}
+
       {/* TIMELINE VIEW */}
       {viewMode === "timeline" && (
         <div className="mx-auto max-w-2xl px-6 py-12">
           <div className="relative space-y-16">
-            {items.length === 0 ? (
+            {filteredItems.length === 0 ? (
               <div className="flex items-center justify-center py-24">
                 <div className="text-center">
                   <p className="text-muted-foreground text-lg">
@@ -50,7 +105,7 @@ export default function CreativeFeed({
                 </div>
               </div>
             ) : (
-              items.map((item, index) => (
+              filteredItems.map((item, index) => (
                 <div
                   key={item.id}
                   className="animate-fade-up-delay-1"
@@ -69,7 +124,7 @@ export default function CreativeFeed({
       {/* MASONRY VIEW */}
       {viewMode === "masonry" && (
         <div className="mx-auto max-w-7xl px-6 py-12">
-          {items.length === 0 ? (
+          {filteredItems.length === 0 ? (
             <div className="flex items-center justify-center py-24">
               <div className="text-center">
                 <p className="text-muted-foreground text-lg">
@@ -82,7 +137,7 @@ export default function CreativeFeed({
             </div>
           ) : (
             <div className="columns-1 gap-6 space-y-6 sm:columns-2 lg:columns-3">
-              {items.map((item, index) => (
+              {filteredItems.map((item, index) => (
                 <div
                   key={item.id}
                   className="mb-6 break-inside-avoid animate-fade-up"

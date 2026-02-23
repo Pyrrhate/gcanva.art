@@ -8,6 +8,7 @@ interface GalleryImage {
   url: string;
   alt: string;
   caption?: string;
+  blurDataURL?: string;
   aspectRatio?: number;
 }
 
@@ -47,8 +48,18 @@ export default function PostGallery({ images }: PostGalleryProps) {
                   src={image.url}
                   alt={image.alt}
                   fill
+                  draggable={false}
+                  onContextMenu={(event) => event.preventDefault()}
                   className="object-cover"
                   sizes="(max-width: 768px) 100vw, 50vw"
+                  placeholder={image.blurDataURL ? "blur" : "empty"}
+                  blurDataURL={image.blurDataURL}
+                />
+                <div
+                  className="absolute inset-0"
+                  onContextMenu={(event) => event.preventDefault()}
+                  onDragStart={(event) => event.preventDefault()}
+                  aria-hidden="true"
                 />
               </div>
               {image.caption && (
@@ -88,9 +99,19 @@ export default function PostGallery({ images }: PostGalleryProps) {
                 src={activeImage.url}
                 alt={activeImage.alt}
                 fill
+                draggable={false}
+                onContextMenu={(event) => event.preventDefault()}
                 className="object-contain"
                 sizes="100vw"
                 priority
+                placeholder={activeImage.blurDataURL ? "blur" : "empty"}
+                blurDataURL={activeImage.blurDataURL}
+              />
+              <div
+                className="absolute inset-0"
+                onContextMenu={(event) => event.preventDefault()}
+                onDragStart={(event) => event.preventDefault()}
+                aria-hidden="true"
               />
             </div>
             {(activeImage.caption || activeImage.alt) && (

@@ -19,6 +19,22 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'tags',
+      title: 'Tags',
+      type: 'array',
+      of: [defineArrayMember({type: 'string'})],
+      options: {
+        list: [
+          {title: 'Dessin', value: 'dessin'},
+          {title: 'Peinture', value: 'peinture'},
+          {title: 'Infographie', value: 'infographie'},
+          {title: 'Projets', value: 'projets'},
+        ],
+      },
+      initialValue: ['projets'],
+      validation: (Rule) => Rule.unique(),
+    }),
+    defineField({
       name: 'seo',
       title: 'SEO',
       type: 'seo',

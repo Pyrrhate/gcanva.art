@@ -5,7 +5,6 @@ import Link from "next/link";
 import { defineQuery } from "next-sanity";
 import SiteHeader from "@/components/SiteHeader";
 import PostGallery from "@/components/PostGallery";
-import PostLikeButton from "@/components/PostLikeButton";
 import { client } from "@/sanity/client";
 import { buildSeoMetadata, getSiteSettingsSeo, type SeoData } from "@/sanity/seo";
 
@@ -204,7 +203,6 @@ export default async function PostPage({
       <header className="mt-6 space-y-3">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <h1 className="text-balance text-4xl font-semibold text-foreground">{post.title}</h1>
-          <PostLikeButton postId={post._id} postSlug={post.slug} />
         </div>
         <p className="text-sm text-muted-foreground">
           {post.lastTendedAt ? new Date(post.lastTendedAt).toLocaleDateString("fr-FR") : ""}

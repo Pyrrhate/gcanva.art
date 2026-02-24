@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Heart, ImageIcon, Music, Pause, Pen, Play } from "lucide-react";
+import { ArrowRight, ImageIcon, Music, Pause, Play } from "lucide-react";
 import { useAudioSystem } from "@/components/audio/AudioProvider";
 
 export interface FeedItemProps {
@@ -114,36 +114,6 @@ function ImageCard({ data }: { data: ImageItemData }) {
 
 function TextCard({ data }: { data: TextItemData }) {
   const [activeSectionIndex, setActiveSectionIndex] = useState(0);
-  const [liked, setLiked] = useState(false);
-
-  const likeStorageKey = useMemo(() => {
-    if (data.postId) return `post-like:${data.postId}`;
-    if (data.postSlug) return `post-like:${data.postSlug}`;
-    return `post-like:${data.title}`;
-  }, [data.postId, data.postSlug, data.title]);
-
-  useEffect(() => {
-    try {
-      setLiked(localStorage.getItem(likeStorageKey) === "1");
-    } catch {
-      setLiked(false);
-    }
-  }, [likeStorageKey]);
-
-  const toggleLike = () => {
-    const next = !liked;
-    setLiked(next);
-
-    try {
-      if (next) {
-        localStorage.setItem(likeStorageKey, "1");
-      } else {
-        localStorage.removeItem(likeStorageKey);
-      }
-    } catch {
-      return;
-    }
-  };
 
   const normalizedSections = useMemo(() => {
     if (data.displayMode === "sectioned" && data.sections && data.sections.length > 0) {
@@ -179,6 +149,7 @@ function TextCard({ data }: { data: TextItemData }) {
   }, [data.content, data.displayMode, data.sections]);
 
   const hasSplitContent = normalizedSections.length > 1;
+  const primaryTag = data.tags?.[0];
   const currentSection = normalizedSections[activeSectionIndex] || normalizedSections[0];
   const currentText = currentSection?.content || "";
   const isGreatPost = hasSplitContent || currentText.length > POST_PREVIEW_THRESHOLD;
@@ -217,50 +188,32 @@ function TextCard({ data }: { data: TextItemData }) {
         </figure>
       )}
 
-      <div className="flex flex-1 flex-col px-5 py-5">
+      <div className="flex flex-1 flex-col px-5 pb-5 pt-4">
         <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            {data.author && <span className="font-medium text-foreground/70">{data.author}</span>}
-            {data.timestamp && (
-              <>
-                {data.author && <span className="opacity-30">/</span>}
-                <time>{data.timestamp}</time>
-              </>
+          <h2 className="mb-1 text-pretty text-left text-xl font-bold leading-snug text-foreground transition-colors duration-200 group-hover:text-primary">
+            {data.postSlug ? (
+              <Link href={`/post/${data.postSlug}`} className="card-read-more-link">
+                {data.title}
+              </Link>
+            ) : (
+              data.title
             )}
-          </div>
+          </h2>
 
-          <div className="flex items-center gap-2">
-            <span className="card-type-badge shrink-0">
-              <Pen className="h-2.5 w-2.5" />
-              Note
-            </span>
-            <button
-              type="button"
-              onClick={toggleLike}
-              className="card-type-badge shrink-0"
-              aria-label={liked ? "Retirer le like" : "Ajouter un like"}
-              aria-pressed={liked}
-            >
-              <Heart className={`h-2.5 w-2.5 ${liked ? "fill-current" : ""}`} />
-              {liked ? "Liked" : "Like"}
-            </button>
+          <div className="flex shrink-0 items-center gap-2">
+            {data.timestamp && (
+              <span className="inline-flex items-center gap-2 text-[11px] text-muted-foreground">
+                <span className="h-px w-8 bg-gradient-to-r from-transparent via-border to-border/70" aria-hidden="true" />
+                <time>{data.timestamp}</time>
+              </span>
+            )}
           </div>
         </div>
 
-        <div className="card-separator my-3" />
-
-        <h2 className="text-pretty text-left text-xl font-bold leading-snug text-foreground transition-colors duration-200 group-hover:text-primary">
-          {data.postSlug ? (
-            <Link href={`/post/${data.postSlug}`} className="card-read-more-link">
-              {data.title}
-            </Link>
-          ) : (
-            data.title
-          )}
-        </h2>
+        <div className="card-separator my-2" />
 
         {!!data.tags?.length && (
-          <div className="mt-3 flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap gap-1.5">
             {data.tags.map((tag) => (
               <span key={`${data.postId || data.postSlug || data.title}-${tag}`} className="card-type-badge">
                 #{tag}
@@ -411,4 +364,4 @@ function MusicCard({ data }: { data: MusicItemData }) {
   );
 }
 
-const POST_PREVIEW_THRESHOLD = 420;
+const POST_PREVIEW_THRESHOLD = 320;

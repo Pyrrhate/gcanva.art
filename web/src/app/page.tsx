@@ -103,7 +103,6 @@ function mapGardenNoteToFeedItems(note: GardenNoteData): CreativeFeedItem[] {
       imageCaption: note.imageCaption,
       imageAspectRatio: note.mainImage?.asset?.metadata?.dimensions?.aspectRatio,
       imageBlurDataURL: note.mainImage?.asset?.metadata?.lqip,
-      author: "Garden Note",
       postId: note._id,
       tags: note.tags,
       timestamp,

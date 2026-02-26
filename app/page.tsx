@@ -11,10 +11,7 @@ export default function PortalPage() {
     <main className="min-h-screen bg-background text-foreground">
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 px-6 py-6 md:px-12">
-        <div className="flex items-center justify-between">
-          <span className="text-sm tracking-wider uppercase">GCanva</span>
-          <span className="text-sm text-muted-foreground">2025</span>
-        </div>
+        <span className="text-sm tracking-wider uppercase">GCanva</span>
       </header>
 
       {/* Main Content */}
@@ -126,7 +123,7 @@ export default function PortalPage() {
       </div>
 
       {/* Footer */}
-      <footer className="fixed bottom-0 left-0 right-0 px-6 py-6 md:px-12">
+      <footer className="px-6 py-6 md:px-12 lg:absolute lg:bottom-0 lg:left-0 lg:right-0">
         <div className="flex items-center justify-between text-xs text-muted-foreground">
           <span>gcanva.art</span>
           <span>Developpeur & Artiste Visuel</span>

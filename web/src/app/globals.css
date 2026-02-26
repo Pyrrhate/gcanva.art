@@ -526,42 +526,60 @@ a:hover::after {
   border-color: hsl(var(--primary));
 }
 
+/* ===== ARTICLE CARD - DUAL THEME SYSTEM ===== */
 .article-card {
   position: relative;
   isolation: isolate;
-  transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease, transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* ----- PAPER THEME: Carnet / Journal intime ----- */
 [data-theme="paper"] .article-card {
-  background-color: hsl(44 48% 96% / 0.96);
+  background-color: hsl(42 38% 95%);
   background-image:
-    linear-gradient(165deg, rgba(255, 255, 255, 0.48), rgba(236, 223, 201, 0.36)),
-    linear-gradient(20deg, rgba(161, 132, 103, 0.08), transparent 34%),
-    radial-gradient(rgba(90, 72, 52, 0.022) 0.7px, transparent 0.7px);
-  background-size: 100% 100%, 100% 100%, 7px 7px;
-  border-color: rgba(64, 52, 38, 0.22);
+    /* Texture papier vintage */
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 27px,
+      rgba(139, 119, 101, 0.08) 27px,
+      rgba(139, 119, 101, 0.08) 28px
+    ),
+    /* Grain subtil */
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  border: 1px solid rgba(139, 119, 101, 0.25);
+  border-radius: 0.5rem;
   box-shadow:
-    0 1px 2px rgba(56, 44, 31, 0.06),
-    0 4px 12px rgba(56, 44, 31, 0.08);
+    0 1px 3px rgba(80, 60, 40, 0.08),
+    0 6px 16px rgba(80, 60, 40, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 [data-theme="paper"] .article-card:hover {
-  border-color: rgba(64, 52, 38, 0.38);
+  border-color: rgba(139, 119, 101, 0.4);
   box-shadow:
-    0 2px 4px rgba(56, 44, 31, 0.08),
-    0 12px 32px rgba(56, 44, 31, 0.14);
+    0 2px 6px rgba(80, 60, 40, 0.1),
+    0 12px 28px rgba(80, 60, 40, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  transform: translateY(-2px);
 }
 
+/* Marge gauche style cahier */
 [data-theme="paper"] .article-card::before {
   content: "";
   position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(135deg, rgba(148, 119, 53, 0.06), transparent 50%);
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, 
+    hsl(var(--primary) / 0.6),
+    hsl(var(--primary) / 0.3)
+  );
+  border-radius: 0.5rem 0 0 0.5rem;
   opacity: 0;
-  transition: opacity 0.4s ease;
-  pointer-events: none;
-  z-index: 1;
+  transition: opacity 0.3s ease;
+  z-index: 5;
 }
 
 [data-theme="paper"] .article-card:hover::before {
@@ -572,154 +590,199 @@ a:hover::after {
   content: none !important;
 }
 
+/* ----- VECTREX THEME: Terminal / Console rétro ----- */
 [data-theme="vectrex"] .article-card {
-  background-color: rgba(4, 8, 11, 0.56);
+  background-color: rgba(0, 8, 12, 0.92);
   background-image:
-    linear-gradient(180deg, rgba(38, 255, 212, 0.07), rgba(8, 12, 18, 0.36)),
-    linear-gradient(130deg, rgba(22, 211, 176, 0.09), rgba(0, 0, 0, 0));
-  border-color: rgba(36, 211, 242, 0.35);
+    /* Scanlines CRT */
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 1px,
+      rgba(22, 211, 176, 0.015) 1px,
+      rgba(22, 211, 176, 0.015) 2px
+    );
+  border: 1px solid rgba(22, 211, 176, 0.2);
+  border-radius: 0.25rem;
   box-shadow:
-    0 0 0 1px rgba(22, 211, 176, 0.12) inset,
-    0 0 16px rgba(34, 211, 238, 0.08),
-    0 8px 24px rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(14px) saturate(126%);
-  -webkit-backdrop-filter: blur(14px) saturate(126%);
+    0 0 0 1px rgba(0, 0, 0, 0.8),
+    0 0 20px rgba(22, 211, 176, 0.05),
+    inset 0 0 60px rgba(22, 211, 176, 0.02);
 }
 
 [data-theme="vectrex"] .article-card:hover {
-  border-color: rgba(36, 211, 242, 0.7);
+  border-color: rgba(22, 211, 176, 0.5);
   box-shadow:
-    0 0 0 1px rgba(22, 211, 176, 0.3) inset,
-    0 0 30px rgba(34, 211, 238, 0.2),
-    0 14px 40px rgba(0, 0, 0, 0.6);
+    0 0 0 1px rgba(0, 0, 0, 0.9),
+    0 0 30px rgba(22, 211, 176, 0.15),
+    0 0 60px rgba(22, 211, 176, 0.08),
+    inset 0 0 80px rgba(22, 211, 176, 0.04);
 }
 
-/* Scanline hover effect for vectrex */
+/* Barre supérieure terminal */
 [data-theme="vectrex"] .article-card::before {
   content: "";
   position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(22, 211, 176, 0.03) 2px,
-    rgba(22, 211, 176, 0.03) 4px
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    transparent 0%,
+    rgba(22, 211, 176, 0.6) 20%,
+    rgba(22, 211, 176, 0.8) 50%,
+    rgba(22, 211, 176, 0.6) 80%,
+    transparent 100%
   );
   opacity: 0;
-  transition: opacity 0.4s ease;
-  pointer-events: none;
-  z-index: 1;
+  transition: opacity 0.3s ease;
+  z-index: 5;
 }
 
 [data-theme="vectrex"] .article-card:hover::before {
   opacity: 1;
 }
 
+/* Effet phosphor glow sur le contenu */
 [data-theme="vectrex"] .article-card::after {
-  content: none !important;
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(22, 211, 176, 0.03) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 1;
 }
 
 /* ===== CARD TYPE BADGES ===== */
 .card-type-badge {
   display: inline-flex;
   align-items: center;
-  gap: 0.375rem;
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.625rem;
+  gap: 0.35rem;
+  font-size: 0.6rem;
   text-transform: uppercase;
-  letter-spacing: 0.16em;
-  padding: 0.25rem 0.625rem;
-  border-radius: 9999px;
+  letter-spacing: 0.1em;
+  padding: 0.2rem 0.5rem;
   transition: all 0.3s ease;
 }
 
+/* Paper: Style tampon/étiquette manuscrite */
 [data-theme="paper"] .card-type-badge {
-  background-color: rgba(161, 132, 103, 0.08);
-  color: rgba(64, 52, 38, 0.6);
-  border: 1px solid rgba(64, 52, 38, 0.12);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-weight: 600;
+  background-color: transparent;
+  color: rgba(100, 80, 60, 0.7);
+  border: 1.5px dashed rgba(100, 80, 60, 0.35);
+  border-radius: 0.25rem;
 }
 
+/* Vectrex: Style terminal/système */
 [data-theme="vectrex"] .card-type-badge {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-weight: 500;
   background-color: rgba(22, 211, 176, 0.08);
-  color: rgba(22, 211, 176, 0.7);
-  border: 1px solid rgba(22, 211, 176, 0.2);
+  color: rgba(22, 211, 176, 0.85);
+  border: 1px solid rgba(22, 211, 176, 0.25);
+  border-radius: 0;
+  text-shadow: 0 0 8px rgba(22, 211, 176, 0.4);
 }
 
-/* ===== CARD DECORATIVE CORNER ===== */
+[data-theme="vectrex"] .card-type-badge::before {
+  content: ">";
+  margin-right: 0.15rem;
+  opacity: 0.6;
+}
+
+/* ===== CARD DECORATIVE ELEMENTS ===== */
 .card-corner-decoration {
   position: absolute;
-  top: 0;
-  right: 0;
-  width: 60px;
-  height: 60px;
   pointer-events: none;
-  overflow: hidden;
-  border-radius: 0 var(--radius) 0 0;
   z-index: 2;
 }
 
-[data-theme="paper"] .card-corner-decoration::before {
-  content: "";
-  position: absolute;
-  top: -30px;
-  right: -30px;
-  width: 60px;
-  height: 60px;
-  background: linear-gradient(135deg, transparent 50%, rgba(148, 119, 53, 0.06) 50%);
-  opacity: 1;
+/* Paper: Page cornée / coin plié */
+[data-theme="paper"] .card-corner-decoration {
+  top: 0;
+  right: 0;
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(
+    135deg,
+    transparent 50%,
+    rgba(200, 180, 160, 0.3) 50%,
+    rgba(180, 160, 140, 0.4) 100%
+  );
+  border-radius: 0 0.5rem 0 0;
+  box-shadow: -2px 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-[data-theme="vectrex"] .card-corner-decoration::before {
-  content: "";
-  position: absolute;
-  top: -1px;
-  right: -1px;
-  width: 32px;
-  height: 32px;
-  border-bottom: 1px solid rgba(22, 211, 176, 0.3);
-  border-left: 1px solid rgba(22, 211, 176, 0.3);
-  border-radius: 0 0 0 6px;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+/* Vectrex: Indicateur système */
+[data-theme="vectrex"] .card-corner-decoration {
+  top: 8px;
+  right: 8px;
+  width: 6px;
+  height: 6px;
+  background: rgba(22, 211, 176, 0.5);
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(22, 211, 176, 0.6);
+  animation: terminal-blink 2s ease-in-out infinite;
 }
 
-[data-theme="vectrex"] .article-card:hover .card-corner-decoration::before {
-  opacity: 1;
+@keyframes terminal-blink {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
 }
 
 /* ===== CARD IMAGE OVERLAY ===== */
 .card-image-overlay {
   position: absolute;
   inset: 0;
-  opacity: 0;
   transition: opacity 0.4s ease;
   pointer-events: none;
 }
 
+/* Paper: Effet photo vintage */
 [data-theme="paper"] .card-image-overlay {
-  background: linear-gradient(to top, hsl(44 48% 96% / 0.6), transparent 50%);
-}
-
-[data-theme="vectrex"] .card-image-overlay {
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent 50%);
-}
-
-.article-card:hover .card-image-overlay {
+  background: 
+    linear-gradient(to bottom, rgba(180, 160, 130, 0.08), rgba(180, 160, 130, 0.15)),
+    linear-gradient(to top, hsl(42 38% 95% / 0.4), transparent 40%);
   opacity: 1;
+  mix-blend-mode: multiply;
+}
+
+[data-theme="paper"] .article-card:hover .card-image-overlay {
+  opacity: 0.6;
+}
+
+/* Vectrex: Effet moniteur CRT */
+[data-theme="vectrex"] .card-image-overlay {
+  background: 
+    /* Vignette */
+    radial-gradient(ellipse at center, transparent 50%, rgba(0, 0, 0, 0.4) 100%),
+    /* Teinte phosphor */
+    linear-gradient(to bottom, rgba(22, 211, 176, 0.05), rgba(0, 0, 0, 0.2));
+  opacity: 1;
+}
+
+[data-theme="vectrex"] .article-card:hover .card-image-overlay {
+  background: 
+    radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 0, 0.3) 100%),
+    linear-gradient(to bottom, rgba(22, 211, 176, 0.1), rgba(0, 0, 0, 0.1));
 }
 
 /* ===== READ MORE LINK ===== */
 .card-read-more {
   display: inline-flex;
   align-items: center;
-  gap: 0.375rem;
-  font-size: 0.75rem;
+  gap: 0.35rem;
+  font-size: 0.7rem;
   font-weight: 500;
-  padding: 0.375rem 0.75rem;
-  border-radius: 9999px;
-  transition: all 0.3s ease;
+  padding: 0.35rem 0.65rem;
+  transition: all 0.25s ease;
   text-decoration: none !important;
 }
 
@@ -727,28 +790,47 @@ a:hover::after {
   content: none !important;
 }
 
+/* Paper: Style lien manuscrit/souligné */
 [data-theme="paper"] .card-read-more {
-  background-color: rgba(148, 119, 53, 0.08);
-  color: hsl(var(--foreground));
-  border: 1px solid rgba(64, 52, 38, 0.15);
+  background-color: transparent;
+  color: hsl(var(--primary));
+  border: none;
+  border-bottom: 1.5px solid hsl(var(--primary) / 0.4);
+  border-radius: 0;
+  padding: 0.2rem 0;
 }
 
 [data-theme="paper"] .card-read-more:hover {
-  background-color: hsl(var(--primary) / 0.12);
-  border-color: hsl(var(--primary) / 0.3);
-  color: hsl(var(--primary));
+  color: hsl(var(--secondary));
+  border-bottom-color: hsl(var(--secondary));
 }
 
+/* Vectrex: Style commande terminal */
 [data-theme="vectrex"] .card-read-more {
-  background-color: rgba(22, 211, 176, 0.08);
-  color: hsl(var(--foreground));
-  border: 1px solid rgba(22, 211, 176, 0.2);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  background-color: transparent;
+  color: rgba(22, 211, 176, 0.9);
+  border: 1px solid rgba(22, 211, 176, 0.3);
+  border-radius: 0;
+  text-shadow: 0 0 6px rgba(22, 211, 176, 0.3);
+}
+
+[data-theme="vectrex"] .card-read-more::before {
+  content: "[";
+  opacity: 0.5;
+}
+
+[data-theme="vectrex"] .card-read-more .card-read-more-text::after {
+  content: "]";
+  opacity: 0.5;
+  margin-left: 0.15rem;
 }
 
 [data-theme="vectrex"] .card-read-more:hover {
-  background-color: rgba(22, 211, 176, 0.15);
-  border-color: rgba(22, 211, 176, 0.4);
-  color: hsl(var(--primary));
+  background-color: rgba(22, 211, 176, 0.1);
+  border-color: rgba(22, 211, 176, 0.6);
+  color: rgba(22, 211, 176, 1);
+  text-shadow: 0 0 12px rgba(22, 211, 176, 0.5);
 }
 
 /* ===== SEPARATOR LINE ===== */
@@ -759,12 +841,20 @@ a:hover::after {
   overflow: hidden;
 }
 
+/* Paper: Ligne de cahier */
 [data-theme="paper"] .card-separator {
-  background: linear-gradient(90deg, transparent, rgba(64, 52, 38, 0.2), transparent);
+  background: rgba(139, 119, 101, 0.2);
+  margin-left: 0;
 }
 
+/* Vectrex: Ligne de données */
 [data-theme="vectrex"] .card-separator {
-  background: linear-gradient(90deg, transparent, rgba(22, 211, 176, 0.3), transparent);
+  height: 1px;
+  background: linear-gradient(90deg, 
+    rgba(22, 211, 176, 0.5) 0%,
+    rgba(22, 211, 176, 0.2) 50%,
+    transparent 100%
+  );
 }
 
 /* ===== CARD INTERNAL LINKS (reset global a::after) ===== */
@@ -789,8 +879,79 @@ a:hover::after {
 
 .waveform-bar {
   width: 2px;
-  border-radius: 9999px;
   animation: waveform-bar 0.8s ease-in-out infinite;
+}
+
+[data-theme="paper"] .waveform-bar {
+  background: hsl(var(--primary));
+  border-radius: 9999px;
+}
+
+[data-theme="vectrex"] .waveform-bar {
+  background: rgba(22, 211, 176, 0.9);
+  border-radius: 0;
+  box-shadow: 0 0 4px rgba(22, 211, 176, 0.6);
+}
+
+/* ===== CARD METADATA (date, auteur) ===== */
+.card-meta {
+  font-size: 0.7rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+[data-theme="paper"] .card-meta {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-style: italic;
+  color: rgba(100, 80, 60, 0.6);
+}
+
+[data-theme="vectrex"] .card-meta {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  color: rgba(22, 211, 176, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+[data-theme="vectrex"] .card-meta::before {
+  content: "//";
+  opacity: 0.4;
+}
+
+/* ===== MUSIC PLAY BUTTON ===== */
+.music-play-button {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+[data-theme="paper"] .music-play-button {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(139, 119, 101, 0.3);
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(80, 60, 40, 0.15);
+}
+
+[data-theme="paper"] .music-play-button:hover {
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 6px 20px rgba(80, 60, 40, 0.2);
+}
+
+[data-theme="vectrex"] .music-play-button {
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(22, 211, 176, 0.5);
+  border-radius: 0;
+  box-shadow: 
+    0 0 20px rgba(22, 211, 176, 0.3),
+    inset 0 0 20px rgba(22, 211, 176, 0.1);
+}
+
+[data-theme="vectrex"] .music-play-button:hover {
+  background: rgba(0, 0, 0, 0.85);
+  border-color: rgba(22, 211, 176, 0.8);
+  box-shadow: 
+    0 0 30px rgba(22, 211, 176, 0.5),
+    inset 0 0 30px rgba(22, 211, 176, 0.15);
 }
 
 .header-surface {

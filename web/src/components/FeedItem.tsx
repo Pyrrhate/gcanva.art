@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, ImageIcon, Music, Pause, Pen, Play } from "lucide-react";
+import { ArrowRight, ImageIcon, Music, Pause, FileText, Play } from "lucide-react";
 import { useAudioSystem } from "@/components/audio/AudioProvider";
 
 export interface FeedItemProps {
@@ -58,7 +58,7 @@ function ImageCard({ data }: { data: ImageItemData }) {
   const aspectRatio = data.aspectRatio || 16 / 9;
 
   return (
-    <article className="article-card group relative h-full overflow-hidden rounded-2xl border p-0 transition-transform duration-300 hover:scale-[1.01]">
+    <article className="article-card group relative h-full overflow-hidden border">
       {/* Corner decoration */}
       <div className="card-corner-decoration" />
 
@@ -71,15 +71,15 @@ function ImageCard({ data }: { data: ImageItemData }) {
           src={data.src}
           alt={data.alt}
           fill
-          className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+          className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02]"
           sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
-        <div className="card-image-overlay rounded-none" />
+        <div className="card-image-overlay" />
       </div>
 
       {/* Content footer */}
       {(data.title || data.caption) && (
-        <div className="relative px-5 py-4">
+        <div className="relative px-4 py-3">
           <div className="flex items-start justify-between gap-3">
             <div className="flex-1 space-y-1">
               {data.title && (
@@ -93,9 +93,9 @@ function ImageCard({ data }: { data: ImageItemData }) {
                 </p>
               )}
             </div>
-            <span className="card-type-badge mt-0.5 shrink-0">
+            <span className="card-type-badge shrink-0">
               <ImageIcon className="h-2.5 w-2.5" />
-              Image
+              <span>IMG</span>
             </span>
           </div>
         </div>
@@ -106,7 +106,7 @@ function ImageCard({ data }: { data: ImageItemData }) {
         <div className="absolute bottom-3 left-3 z-10">
           <span className="card-type-badge">
             <ImageIcon className="h-2.5 w-2.5" />
-            Image
+            <span>IMG</span>
           </span>
         </div>
       )}
@@ -157,11 +157,11 @@ function TextCard({ data }: { data: TextItemData }) {
   const isGreatPost = hasSplitContent || currentText.length > POST_PREVIEW_THRESHOLD;
   const previewText = currentText.slice(0, POST_PREVIEW_THRESHOLD).trim();
   const textClassName = isGreatPost
-    ? "whitespace-pre-wrap text-sm leading-relaxed text-foreground/80 line-clamp-6"
-    : "whitespace-pre-wrap text-base leading-7 text-foreground/90";
+    ? "whitespace-pre-wrap text-sm leading-relaxed text-foreground/80 line-clamp-5"
+    : "whitespace-pre-wrap text-sm leading-relaxed text-foreground/85";
 
   return (
-    <article className="article-card group relative flex h-full flex-col rounded-2xl border overflow-hidden transition-transform duration-300 hover:scale-[1.01]">
+    <article className="article-card group relative flex h-full flex-col border overflow-hidden">
       {/* Corner decoration */}
       <div className="card-corner-decoration" />
 
@@ -170,19 +170,19 @@ function TextCard({ data }: { data: TextItemData }) {
         <figure className="relative w-full overflow-hidden">
           <div
             className="relative w-full overflow-hidden"
-            style={{ aspectRatio: data.imageAspectRatio || 4 / 3 }}
+            style={{ aspectRatio: data.imageAspectRatio || 16 / 10 }}
           >
             <Image
               src={data.imageSrc}
               alt={data.imageAlt || data.title}
               fill
-              className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+              className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02]"
               sizes="(max-width: 1024px) 100vw, 700px"
             />
-            <div className="card-image-overlay rounded-none" />
+            <div className="card-image-overlay" />
           </div>
           {data.imageCaption && (
-            <figcaption className="px-5 pt-2.5 pb-0 text-xs text-muted-foreground">
+            <figcaption className="px-4 pt-2 pb-0 text-[11px] text-muted-foreground italic">
               {data.imageCaption}
             </figcaption>
           )}
@@ -190,23 +190,21 @@ function TextCard({ data }: { data: TextItemData }) {
       )}
 
       {/* Content area */}
-      <div className="flex flex-1 flex-col px-5 py-5">
-        {/* Header row: badge + metadata */}
+      <div className="flex flex-1 flex-col px-4 py-4">
+        {/* Header row: metadata + badge */}
         <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            {data.author && (
-              <span className="font-medium text-foreground/70">{data.author}</span>
-            )}
+          <div className="card-meta">
+            {data.author && <span>{data.author}</span>}
             {data.timestamp && (
               <>
-                {data.author && <span className="opacity-30">{'/'}</span>}
+                {data.author && <span className="opacity-40">/</span>}
                 <time>{data.timestamp}</time>
               </>
             )}
           </div>
           <span className="card-type-badge shrink-0">
-            <Pen className="h-2.5 w-2.5" />
-            Note
+            <FileText className="h-2.5 w-2.5" />
+            <span>Note</span>
           </span>
         </div>
 
@@ -214,9 +212,9 @@ function TextCard({ data }: { data: TextItemData }) {
         <div className="card-separator my-3" />
 
         {/* Title */}
-        <h2 className="text-pretty text-xl font-bold leading-snug text-foreground transition-colors duration-200 group-hover:text-primary">
+        <h2 className="text-pretty text-lg font-semibold leading-snug text-foreground transition-colors duration-200 group-hover:text-primary">
           {data.postSlug ? (
-            <Link href={`/post/${data.postSlug}`} className="card-read-more-link">
+            <Link href={`/post/${data.postSlug}`}>
               {data.title}
             </Link>
           ) : (
@@ -232,13 +230,13 @@ function TextCard({ data }: { data: TextItemData }) {
                 key={`${section.title || "section"}-${index}`}
                 type="button"
                 onClick={() => setActiveSectionIndex(index)}
-                className={`rounded-full border px-2.5 py-0.5 text-[11px] font-medium transition-all duration-200 ${
+                className={`border px-2 py-0.5 text-[10px] font-medium transition-all duration-200 ${
                   activeSectionIndex === index
                     ? "border-primary/40 bg-primary/10 text-primary"
                     : "border-border/60 text-muted-foreground hover:border-primary/30 hover:text-foreground"
                 }`}
               >
-                {section.title || `Partie ${index + 1}`}
+                {section.title || `${index + 1}`}
               </button>
             ))}
           </div>
@@ -255,7 +253,7 @@ function TextCard({ data }: { data: TextItemData }) {
         {isGreatPost && data.postSlug && (
           <div className="mt-4">
             <Link href={`/post/${data.postSlug}`} className="card-read-more">
-              Lire la suite
+              <span className="card-read-more-text">Lire</span>
               <ArrowRight className="h-3 w-3 transition-transform duration-200 group-hover:translate-x-0.5" />
             </Link>
           </div>
@@ -286,7 +284,7 @@ function MusicCard({ data }: { data: MusicItemData }) {
   };
 
   return (
-    <article className="article-card group relative flex h-full flex-col rounded-2xl border overflow-hidden transition-transform duration-300 hover:scale-[1.01]">
+    <article className="article-card group relative flex h-full flex-col border overflow-hidden">
       {/* Corner decoration */}
       <div className="card-corner-decoration" />
 
@@ -297,10 +295,10 @@ function MusicCard({ data }: { data: MusicItemData }) {
             src={data.cover}
             alt={data.title}
             fill
-            className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
+            className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
             sizes="(max-width: 768px) 100vw, 400px"
           />
-          <div className="card-image-overlay rounded-none" />
+          <div className="card-image-overlay" />
 
           {/* Play button overlay */}
           {data.audioUrl && (
@@ -308,13 +306,13 @@ function MusicCard({ data }: { data: MusicItemData }) {
               <button
                 type="button"
                 onClick={() => void handlePlay()}
-                className="flex h-14 w-14 items-center justify-center rounded-full bg-background/80 text-foreground opacity-0 shadow-lg backdrop-blur-sm transition-all duration-300 group-hover:opacity-100 hover:scale-110 hover:bg-background/90"
+                className="music-play-button flex h-12 w-12 items-center justify-center text-foreground opacity-0 transition-all duration-300 group-hover:opacity-100 hover:scale-110"
                 aria-label={isCurrentTrack && isPlaying ? "Mettre en pause" : "Lire le morceau"}
               >
                 {isCurrentTrack && isPlaying ? (
-                  <Pause className="h-6 w-6" />
+                  <Pause className="h-5 w-5" />
                 ) : (
-                  <Play className="h-6 w-6 translate-x-0.5 fill-current" />
+                  <Play className="h-5 w-5 translate-x-0.5 fill-current" />
                 )}
               </button>
             </div>
@@ -326,7 +324,7 @@ function MusicCard({ data }: { data: MusicItemData }) {
               {[0, 1, 2, 3, 4].map((i) => (
                 <div
                   key={i}
-                  className="waveform-bar bg-primary"
+                  className="waveform-bar"
                   style={{
                     animationDelay: `${i * 0.12}s`,
                     height: `${30 + Math.random() * 70}%`,
@@ -339,15 +337,15 @@ function MusicCard({ data }: { data: MusicItemData }) {
       )}
 
       {/* Content */}
-      <div className="flex flex-1 flex-col px-5 py-4">
+      <div className="flex flex-1 flex-col px-4 py-4">
         {/* Badge + duration */}
         <div className="flex items-center justify-between gap-3">
           <span className="card-type-badge">
             <Music className="h-2.5 w-2.5" />
-            Musique
+            <span>Audio</span>
           </span>
           {data.duration && (
-            <span className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground/60">
+            <span className="card-meta">
               {data.duration}
             </span>
           )}
@@ -358,7 +356,7 @@ function MusicCard({ data }: { data: MusicItemData }) {
 
         {/* Title + artist */}
         <div className="space-y-0.5">
-          <h3 className="text-base font-bold leading-tight text-foreground transition-colors duration-200 group-hover:text-primary">
+          <h3 className="text-base font-semibold leading-tight text-foreground transition-colors duration-200 group-hover:text-primary">
             {data.title}
           </h3>
           <p className="text-xs text-muted-foreground">{data.artist}</p>
@@ -366,13 +364,13 @@ function MusicCard({ data }: { data: MusicItemData }) {
 
         {/* Description */}
         {data.description && (
-          <p className="mt-2.5 text-xs leading-relaxed text-muted-foreground line-clamp-3">
+          <p className="mt-2.5 text-xs leading-relaxed text-muted-foreground line-clamp-2">
             {data.description}
           </p>
         )}
 
         {/* Actions */}
-        <div className="mt-auto flex items-center gap-2 pt-4">
+        <div className="mt-auto flex items-center gap-3 pt-4">
           {data.audioUrl && (
             <button
               type="button"
@@ -384,7 +382,7 @@ function MusicCard({ data }: { data: MusicItemData }) {
               ) : (
                 <Play className="h-3 w-3" />
               )}
-              {isCurrentTrack && isPlaying ? "Pause" : "Ecouter"}
+              <span className="card-read-more-text">{isCurrentTrack && isPlaying ? "Pause" : "Play"}</span>
             </button>
           )}
 
@@ -395,7 +393,7 @@ function MusicCard({ data }: { data: MusicItemData }) {
               rel="noreferrer"
               className="card-read-more"
             >
-              Spotify
+              <span className="card-read-more-text">Spotify</span>
               <ArrowRight className="h-3 w-3" />
             </a>
           )}

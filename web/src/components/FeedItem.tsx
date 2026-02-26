@@ -6,6 +6,8 @@ import Link from "next/link";
 import { ArrowRight, ImageIcon, Music, Pause, FileText, Play } from "lucide-react";
 import { useAudioSystem } from "@/components/audio/AudioProvider";
 
+const POST_PREVIEW_THRESHOLD = 420;
+
 export interface FeedItemProps {
   type: "image" | "text" | "music";
   data: ImageItemData | TextItemData | MusicItemData;
@@ -402,5 +404,3 @@ function MusicCard({ data }: { data: MusicItemData }) {
     </article>
   );
 }
-
-const POST_PREVIEW_THRESHOLD = 420;

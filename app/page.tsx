@@ -123,7 +123,7 @@ export default function PortalPage() {
       </div>
 
       {/* Footer */}
-      <footer className="px-6 py-6 md:px-12 lg:absolute lg:bottom-0 lg:left-0 lg:right-0">
+      <footer className="px-6 py-6 md:px-12">
         <div className="flex items-center justify-between text-xs text-muted-foreground">
           <span>gcanva.art</span>
           <span>Developpeur & Artiste Visuel</span>

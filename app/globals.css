@@ -2,82 +2,124 @@
 @import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
+@custom-variant vectrex (&:is(.vectrex *));
 
+/* PAPIER THEME - Default (cream, paper, hand-drawn) */
 :root {
-  --background: oklch(0.12 0 0);
-  --foreground: oklch(0.92 0 0);
-  --card: oklch(0.15 0 0);
-  --card-foreground: oklch(0.92 0 0);
-  --popover: oklch(0.15 0 0);
-  --popover-foreground: oklch(0.92 0 0);
-  --primary: oklch(0.92 0 0);
-  --primary-foreground: oklch(0.12 0 0);
-  --secondary: oklch(0.22 0 0);
-  --secondary-foreground: oklch(0.92 0 0);
-  --muted: oklch(0.22 0 0);
-  --muted-foreground: oklch(0.6 0 0);
-  --accent: oklch(0.22 0 0);
-  --accent-foreground: oklch(0.92 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.577 0.245 27.325);
-  --border: oklch(0.25 0 0);
-  --input: oklch(0.22 0 0);
-  --ring: oklch(0.5 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
+  --background: #FDFCF0;
+  --foreground: #1a1a1a;
+  --card: #F5F4E8;
+  --card-foreground: #1a1a1a;
+  --popover: #F5F4E8;
+  --popover-foreground: #1a1a1a;
+  --primary: #1a1a1a;
+  --primary-foreground: #FDFCF0;
+  --secondary: #E8E7DB;
+  --secondary-foreground: #1a1a1a;
+  --muted: #E8E7DB;
+  --muted-foreground: #6b6b6b;
+  --accent: #C4A35A;
+  --accent-foreground: #1a1a1a;
+  --destructive: #8B0000;
+  --destructive-foreground: #FDFCF0;
+  --border: #1a1a1a;
+  --input: #E8E7DB;
+  --ring: #1a1a1a;
+  --glow: transparent;
+  --chart-1: #C4A35A;
+  --chart-2: #8B7355;
+  --chart-3: #6B5344;
+  --chart-4: #4A3728;
+  --chart-5: #2A1F14;
   --radius: 0rem;
-  --sidebar: oklch(0.15 0 0);
-  --sidebar-foreground: oklch(0.92 0 0);
-  --sidebar-primary: oklch(0.92 0 0);
-  --sidebar-primary-foreground: oklch(0.12 0 0);
-  --sidebar-accent: oklch(0.22 0 0);
-  --sidebar-accent-foreground: oklch(0.92 0 0);
-  --sidebar-border: oklch(0.25 0 0);
-  --sidebar-ring: oklch(0.5 0 0);
+  --sidebar: #F5F4E8;
+  --sidebar-foreground: #1a1a1a;
+  --sidebar-primary: #1a1a1a;
+  --sidebar-primary-foreground: #FDFCF0;
+  --sidebar-accent: #E8E7DB;
+  --sidebar-accent-foreground: #1a1a1a;
+  --sidebar-border: #1a1a1a;
+  --sidebar-ring: #1a1a1a;
 }
 
+/* VECTREX THEME - CRT/Neon aesthetic */
+.vectrex {
+  --background: #050505;
+  --foreground: #00FF88;
+  --card: #0a0a0a;
+  --card-foreground: #00FF88;
+  --popover: #0a0a0a;
+  --popover-foreground: #00FF88;
+  --primary: #00FF88;
+  --primary-foreground: #050505;
+  --secondary: #0f1f15;
+  --secondary-foreground: #00FF88;
+  --muted: #0f1f15;
+  --muted-foreground: #00CC6A;
+  --accent: #00FFFF;
+  --accent-foreground: #050505;
+  --destructive: #FF0040;
+  --destructive-foreground: #050505;
+  --border: #00FF88;
+  --input: #0f1f15;
+  --ring: #00FFFF;
+  --glow: #00FF88;
+  --chart-1: #00FF88;
+  --chart-2: #00FFFF;
+  --chart-3: #00CC6A;
+  --chart-4: #008855;
+  --chart-5: #005533;
+  --sidebar: #0a0a0a;
+  --sidebar-foreground: #00FF88;
+  --sidebar-primary: #00FF88;
+  --sidebar-primary-foreground: #050505;
+  --sidebar-accent: #0f1f15;
+  --sidebar-accent-foreground: #00FF88;
+  --sidebar-border: #00FF88;
+  --sidebar-ring: #00FFFF;
+}
+
+/* Dark mode - same as vectrex for consistency */
 .dark {
-  --background: oklch(0.12 0 0);
-  --foreground: oklch(0.92 0 0);
-  --card: oklch(0.15 0 0);
-  --card-foreground: oklch(0.92 0 0);
-  --popover: oklch(0.15 0 0);
-  --popover-foreground: oklch(0.92 0 0);
-  --primary: oklch(0.92 0 0);
-  --primary-foreground: oklch(0.12 0 0);
-  --secondary: oklch(0.22 0 0);
-  --secondary-foreground: oklch(0.92 0 0);
-  --muted: oklch(0.22 0 0);
-  --muted-foreground: oklch(0.6 0 0);
-  --accent: oklch(0.22 0 0);
-  --accent-foreground: oklch(0.92 0 0);
-  --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: oklch(0.25 0 0);
-  --input: oklch(0.22 0 0);
-  --ring: oklch(0.5 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.15 0 0);
-  --sidebar-foreground: oklch(0.92 0 0);
-  --sidebar-primary: oklch(0.92 0 0);
-  --sidebar-primary-foreground: oklch(0.12 0 0);
-  --sidebar-accent: oklch(0.22 0 0);
-  --sidebar-accent-foreground: oklch(0.92 0 0);
-  --sidebar-border: oklch(0.25 0 0);
-  --sidebar-ring: oklch(0.5 0 0);
+  --background: #050505;
+  --foreground: #00FF88;
+  --card: #0a0a0a;
+  --card-foreground: #00FF88;
+  --popover: #0a0a0a;
+  --popover-foreground: #00FF88;
+  --primary: #00FF88;
+  --primary-foreground: #050505;
+  --secondary: #0f1f15;
+  --secondary-foreground: #00FF88;
+  --muted: #0f1f15;
+  --muted-foreground: #00CC6A;
+  --accent: #00FFFF;
+  --accent-foreground: #050505;
+  --destructive: #FF0040;
+  --destructive-foreground: #050505;
+  --border: #00FF88;
+  --input: #0f1f15;
+  --ring: #00FFFF;
+  --glow: #00FF88;
+  --chart-1: #00FF88;
+  --chart-2: #00FFFF;
+  --chart-3: #00CC6A;
+  --chart-4: #008855;
+  --chart-5: #005533;
+  --sidebar: #0a0a0a;
+  --sidebar-foreground: #00FF88;
+  --sidebar-primary: #00FF88;
+  --sidebar-primary-foreground: #050505;
+  --sidebar-accent: #0f1f15;
+  --sidebar-accent-foreground: #00FF88;
+  --sidebar-border: #00FF88;
+  --sidebar-ring: #00FFFF;
 }
 
 @theme inline {
   --font-sans: var(--font-sans), 'Space Grotesk', system-ui, sans-serif;
   --font-serif: var(--font-serif), 'Instrument Serif', Georgia, serif;
-  --font-mono: 'Geist Mono', 'Geist Mono Fallback';
+  --font-mono: 'IBM Plex Mono', 'Geist Mono', monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -97,6 +139,7 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-glow: var(--glow);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
@@ -123,4 +166,146 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Paper grain texture for Papier theme */
+.paper-texture {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  background-blend-mode: overlay;
+}
+
+/* Scanline effect for Vectrex theme */
+.scanlines::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 255, 136, 0.03) 2px,
+    rgba(0, 255, 136, 0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* CRT flicker animation */
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  92% { opacity: 1; }
+  93% { opacity: 0.9; }
+  94% { opacity: 1; }
+  95% { opacity: 0.95; }
+}
+
+.crt-flicker {
+  animation: flicker 4s infinite;
+}
+
+/* Blueprint grid pattern */
+.blueprint-grid {
+  background-image: 
+    linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-position: -1px -1px;
+}
+
+.vectrex .blueprint-grid {
+  background-image: 
+    linear-gradient(rgba(0, 255, 136, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 136, 0.1) 1px, transparent 1px);
+}
+
+/* Neon glow effect */
+.neon-glow {
+  text-shadow: 
+    0 0 5px var(--glow),
+    0 0 10px var(--glow),
+    0 0 20px var(--glow),
+    0 0 40px var(--glow);
+}
+
+.neon-border {
+  box-shadow: 
+    0 0 5px var(--glow),
+    0 0 10px var(--glow),
+    inset 0 0 5px var(--glow);
+}
+
+/* Rough border effect for Papier */
+.rough-border {
+  border: 2px solid var(--border);
+  position: relative;
+}
+
+.rough-border::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border: 2px solid var(--border);
+  clip-path: polygon(
+    0% 2%, 3% 0%, 97% 1%, 100% 3%, 
+    99% 97%, 97% 100%, 3% 99%, 0% 97%
+  );
+  pointer-events: none;
+}
+
+/* Drop cap styling */
+.drop-cap::first-letter {
+  float: left;
+  font-family: var(--font-serif);
+  font-size: 4em;
+  line-height: 0.8;
+  padding-right: 0.1em;
+  margin-top: 0.05em;
+  font-weight: 400;
+}
+
+/* Transition utilities */
+.theme-transition {
+  transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+}
+
+/* CRT noise overlay for Vectrex */
+.vectrex::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.02;
+  pointer-events: none;
+  z-index: 100;
+}
+
+/* Selection styling */
+::selection {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+/* Focus visible styling */
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border: 1px solid var(--background);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-foreground);
 }

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Space_Grotesk, Instrument_Serif } from 'next/font/google'
+import { Space_Grotesk, Instrument_Serif, IBM_Plex_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
@@ -12,6 +12,12 @@ const instrumentSerif = Instrument_Serif({
   weight: '400',
   subsets: ["latin"],
   variable: '--font-serif'
+});
+
+const ibmPlexMono = IBM_Plex_Mono({
+  weight: ['400', '500', '600'],
+  subsets: ["latin"],
+  variable: '--font-mono'
 });
 
 export const metadata: Metadata = {
@@ -44,7 +50,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr">
-      <body className={`${spaceGrotesk.variable} ${instrumentSerif.variable} font-sans antialiased`}>
+      <body className={`${spaceGrotesk.variable} ${instrumentSerif.variable} ${ibmPlexMono.variable} font-sans antialiased`}>
         {children}
         <Analytics />
       </body>

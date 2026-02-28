@@ -3,81 +3,74 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ============================================
+   PAPIER THEME (default) — Off-white / Cream
+   ============================================ */
 :root {
-  --background: oklch(0.12 0 0);
-  --foreground: oklch(0.92 0 0);
-  --card: oklch(0.15 0 0);
-  --card-foreground: oklch(0.92 0 0);
-  --popover: oklch(0.15 0 0);
-  --popover-foreground: oklch(0.92 0 0);
-  --primary: oklch(0.92 0 0);
-  --primary-foreground: oklch(0.12 0 0);
-  --secondary: oklch(0.22 0 0);
-  --secondary-foreground: oklch(0.92 0 0);
-  --muted: oklch(0.22 0 0);
-  --muted-foreground: oklch(0.6 0 0);
-  --accent: oklch(0.22 0 0);
-  --accent-foreground: oklch(0.92 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.577 0.245 27.325);
-  --border: oklch(0.25 0 0);
-  --input: oklch(0.22 0 0);
-  --ring: oklch(0.5 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
+  --background: #FDFCF0;
+  --foreground: #1a1a1a;
+  --card: #F5F3E6;
+  --card-foreground: #1a1a1a;
+  --popover: #F5F3E6;
+  --popover-foreground: #1a1a1a;
+  --primary: #1a1a1a;
+  --primary-foreground: #FDFCF0;
+  --secondary: #E8E5D4;
+  --secondary-foreground: #1a1a1a;
+  --muted: #E8E5D4;
+  --muted-foreground: #6b6b5e;
+  --accent: #c9412a;
+  --accent-foreground: #FDFCF0;
+  --destructive: #c9412a;
+  --destructive-foreground: #FDFCF0;
+  --border: #1a1a1a;
+  --input: #E8E5D4;
+  --ring: #1a1a1a;
   --radius: 0rem;
-  --sidebar: oklch(0.15 0 0);
-  --sidebar-foreground: oklch(0.92 0 0);
-  --sidebar-primary: oklch(0.92 0 0);
-  --sidebar-primary-foreground: oklch(0.12 0 0);
-  --sidebar-accent: oklch(0.22 0 0);
-  --sidebar-accent-foreground: oklch(0.92 0 0);
-  --sidebar-border: oklch(0.25 0 0);
-  --sidebar-ring: oklch(0.5 0 0);
+
+  --glow: transparent;
+  --grain-opacity: 0.06;
+  --scanline-opacity: 0;
+  --grid-color: transparent;
+  --card-border-width: 2px;
 }
 
+/* ============================================
+   VECTREX THEME — Deep void black, neon CRT
+   ============================================ */
 .dark {
-  --background: oklch(0.12 0 0);
-  --foreground: oklch(0.92 0 0);
-  --card: oklch(0.15 0 0);
-  --card-foreground: oklch(0.92 0 0);
-  --popover: oklch(0.15 0 0);
-  --popover-foreground: oklch(0.92 0 0);
-  --primary: oklch(0.92 0 0);
-  --primary-foreground: oklch(0.12 0 0);
-  --secondary: oklch(0.22 0 0);
-  --secondary-foreground: oklch(0.92 0 0);
-  --muted: oklch(0.22 0 0);
-  --muted-foreground: oklch(0.6 0 0);
-  --accent: oklch(0.22 0 0);
-  --accent-foreground: oklch(0.92 0 0);
-  --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: oklch(0.25 0 0);
-  --input: oklch(0.22 0 0);
-  --ring: oklch(0.5 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.15 0 0);
-  --sidebar-foreground: oklch(0.92 0 0);
-  --sidebar-primary: oklch(0.92 0 0);
-  --sidebar-primary-foreground: oklch(0.12 0 0);
-  --sidebar-accent: oklch(0.22 0 0);
-  --sidebar-accent-foreground: oklch(0.92 0 0);
-  --sidebar-border: oklch(0.25 0 0);
-  --sidebar-ring: oklch(0.5 0 0);
+  --background: #0a0a0a;
+  --foreground: #e0ffe0;
+  --card: #111111;
+  --card-foreground: #e0ffe0;
+  --popover: #111111;
+  --popover-foreground: #e0ffe0;
+  --primary: #00ff88;
+  --primary-foreground: #0a0a0a;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #e0ffe0;
+  --muted: #1a1a1a;
+  --muted-foreground: #5a7a5a;
+  --accent: #00ffc8;
+  --accent-foreground: #0a0a0a;
+  --destructive: #ff3333;
+  --destructive-foreground: #0a0a0a;
+  --border: #00ff8844;
+  --input: #1a1a1a;
+  --ring: #00ff88;
+  --radius: 0rem;
+
+  --glow: #00ff8833;
+  --grain-opacity: 0;
+  --scanline-opacity: 0.04;
+  --grid-color: #00ff8808;
+  --card-border-width: 1px;
 }
 
 @theme inline {
   --font-sans: var(--font-sans), 'Space Grotesk', system-ui, sans-serif;
   --font-serif: var(--font-serif), 'Instrument Serif', Georgia, serif;
-  --font-mono: 'Geist Mono', 'Geist Mono Fallback';
+  --font-mono: var(--font-mono), 'IBM Plex Mono', 'Geist Mono', monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -97,23 +90,146 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
+  --color-glow: var(--glow);
+}
+
+/* ============================================
+   PAPER GRAIN TEXTURE (Papier theme only)
+   ============================================ */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+  opacity: var(--grain-opacity);
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.5'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+
+/* ============================================
+   SCANLINE OVERLAY (Vectrex theme only)
+   ============================================ */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+  opacity: var(--scanline-opacity);
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.3) 2px,
+    rgba(0, 0, 0, 0.3) 4px
+  );
+}
+
+/* ============================================
+   BLUEPRINT GRID BACKGROUND
+   ============================================ */
+.blueprint-grid {
+  background-image:
+    linear-gradient(var(--grid-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* ============================================
+   DROP CAPS (Lettrines)
+   ============================================ */
+.drop-cap::first-letter {
+  float: left;
+  font-family: var(--font-serif), 'Instrument Serif', Georgia, serif;
+  font-size: 4em;
+  line-height: 0.8;
+  padding-right: 0.1em;
+  margin-top: 0.05em;
+  font-weight: 400;
+  font-style: italic;
+}
+
+/* ============================================
+   CRT FLICKER (Vectrex only)
+   ============================================ */
+@keyframes crt-flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.97; }
+}
+
+.dark .crt-flicker:hover {
+  animation: crt-flicker 0.1s infinite;
+}
+
+/* ============================================
+   GLOW EFFECTS (Vectrex only)
+   ============================================ */
+.dark .glow-border {
+  box-shadow: 0 0 8px var(--glow), inset 0 0 8px var(--glow);
+}
+
+.dark .glow-text {
+  text-shadow: 0 0 12px var(--glow);
+}
+
+/* ============================================
+   ROUGH BORDERS (Papier only)
+   ============================================ */
+:root .rough-border {
+  border: 2px solid var(--foreground);
+}
+
+/* ============================================
+   ARTICLE PROSE STYLING
+   ============================================ */
+.prose-carnet blockquote {
+  border-left: 3px solid var(--accent);
+  padding-left: 1.5rem;
+  font-style: italic;
+  margin: 2rem 0;
+  color: var(--muted-foreground);
+}
+
+.prose-carnet pre {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+  overflow-x: auto;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.875rem;
+  line-height: 1.7;
+  margin: 2rem 0;
+}
+
+.prose-carnet code {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.875em;
+  background: var(--secondary);
+  padding: 0.15em 0.4em;
+}
+
+.prose-carnet pre code {
+  background: transparent;
+  padding: 0;
+}
+
+.prose-carnet figure {
+  margin: 2.5rem 0;
+}
+
+.prose-carnet figcaption {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  margin-top: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 @layer base {

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
-import { Space_Grotesk, Instrument_Serif } from 'next/font/google'
+import { Space_Grotesk, Instrument_Serif, IBM_Plex_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import { ThemeProvider } from '@/components/theme-provider'
 import './globals.css'
 
 const spaceGrotesk = Space_Grotesk({ 
@@ -14,9 +15,15 @@ const instrumentSerif = Instrument_Serif({
   variable: '--font-serif'
 });
 
+const ibmPlexMono = IBM_Plex_Mono({
+  weight: ['400', '500', '600'],
+  subsets: ["latin"],
+  variable: '--font-mono'
+});
+
 export const metadata: Metadata = {
-  title: 'GCanva | L\'Interstice',
-  description: 'Precision millimétrée du développement web et énergie brute de l\'expérimentation visuelle.',
+  title: 'Carnet | Alchimie Digitale',
+  description: 'Carnet de bord de l\'Underground Alchemist. Experimentations, reflexions, mutations.',
   generator: 'v0.app',
   icons: {
     icon: [
@@ -43,9 +50,16 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="fr">
-      <body className={`${spaceGrotesk.variable} ${instrumentSerif.variable} font-sans antialiased`}>
-        {children}
+    <html lang="fr" suppressHydrationWarning>
+      <body className={`${spaceGrotesk.variable} ${instrumentSerif.variable} ${ibmPlexMono.variable} font-sans antialiased`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem={false}
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
         <Analytics />
       </body>
     </html>

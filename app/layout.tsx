@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Space_Grotesk, Instrument_Serif, IBM_Plex_Mono } from 'next/font/google'
+import { Suspense } from 'react'
 import { Analytics } from '@vercel/analytics/next'
 import { ThemeProvider } from '@/components/theme-provider'
 import './globals.css'
@@ -60,7 +61,9 @@ export default function RootLayout({
         >
           {children}
         </ThemeProvider>
-        <Analytics />
+        <Suspense fallback={null}>
+          <Analytics />
+        </Suspense>
       </body>
     </html>
   )

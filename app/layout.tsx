@@ -16,13 +16,12 @@ const instrumentSerif = Instrument_Serif({
 
 const ibmPlexMono = IBM_Plex_Mono({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: "400",
   variable: "--font-mono-carnet",
 });
 
 const playfairDisplay = Playfair_Display({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800", "900"],
   variable: "--font-serif-carnet",
 });
 

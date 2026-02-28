@@ -1,0 +1,178 @@
+/* Carnet Theme Styles */
+
+/* Paper texture overlay */
+.paper-texture {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: 0.03;
+}
+
+/* Scanline effect for Vectrex */
+.scanlines {
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 1px,
+    rgba(0, 255, 136, 0.03) 1px,
+    rgba(0, 255, 136, 0.03) 2px
+  );
+  pointer-events: none;
+}
+
+/* CRT flicker animation */
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  92% { opacity: 1; }
+  93% { opacity: 0.8; }
+  94% { opacity: 1; }
+  97% { opacity: 0.9; }
+  98% { opacity: 1; }
+}
+
+.crt-flicker:hover {
+  animation: flicker 0.15s infinite;
+}
+
+/* Glow effect for Vectrex theme */
+@keyframes glow-pulse {
+  0%, 100% { 
+    box-shadow: 0 0 5px currentColor, 0 0 10px currentColor, 0 0 15px currentColor;
+  }
+  50% { 
+    box-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 30px currentColor;
+  }
+}
+
+.neon-glow {
+  text-shadow: 0 0 5px currentColor, 0 0 10px currentColor, 0 0 20px currentColor;
+}
+
+.neon-border {
+  box-shadow: 0 0 5px currentColor, 0 0 10px currentColor;
+}
+
+.neon-border:hover {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+/* Blueprint grid pattern */
+.blueprint-grid {
+  background-image: 
+    linear-gradient(rgba(0, 120, 200, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 120, 200, 0.1) 1px, transparent 1px),
+    linear-gradient(rgba(0, 120, 200, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 120, 200, 0.05) 1px, transparent 1px);
+  background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
+}
+
+.vectrex-blueprint-grid {
+  background-image: 
+    linear-gradient(rgba(0, 255, 136, 0.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 136, 0.15) 1px, transparent 1px),
+    linear-gradient(rgba(0, 255, 136, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 136, 0.05) 1px, transparent 1px);
+  background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
+}
+
+/* Drop cap for articles */
+.drop-cap::first-letter {
+  float: left;
+  font-size: 4.5em;
+  line-height: 0.8;
+  padding-right: 0.1em;
+  font-weight: 700;
+}
+
+.drop-cap-papier::first-letter {
+  font-family: var(--font-serif-carnet), Georgia, serif;
+  color: #1a1a1a;
+}
+
+.drop-cap-vectrex::first-letter {
+  font-family: var(--font-mono-carnet), monospace;
+  color: #00FF88;
+  text-shadow: 0 0 10px #00FF88, 0 0 20px #00FF88;
+}
+
+/* Rough border effect for Papier theme */
+.rough-border {
+  border: 2px solid #1a1a1a;
+  position: relative;
+}
+
+.rough-border::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border: 2px solid #1a1a1a;
+  clip-path: polygon(
+    0 2px, 2px 2px, 2px 0, 
+    calc(100% - 2px) 0, calc(100% - 2px) 2px, 100% 2px,
+    100% calc(100% - 2px), calc(100% - 2px) calc(100% - 2px), calc(100% - 2px) 100%,
+    2px 100%, 2px calc(100% - 2px), 0 calc(100% - 2px)
+  );
+  pointer-events: none;
+}
+
+/* Code block styling */
+.code-block {
+  font-family: var(--font-mono-carnet), 'IBM Plex Mono', monospace;
+  font-size: 0.875rem;
+  line-height: 1.7;
+  tab-size: 2;
+}
+
+.code-block-papier {
+  background: #f5f4e8;
+  border: 1px solid #1a1a1a;
+  color: #1a1a1a;
+}
+
+.code-block-vectrex {
+  background: #0a0a0a;
+  border: 1px solid #00FF88;
+  color: #00FF88;
+  box-shadow: inset 0 0 20px rgba(0, 255, 136, 0.1);
+}
+
+/* Blockquote styling */
+.blockquote-papier {
+  border-left: 4px solid #1a1a1a;
+  font-family: var(--font-serif-carnet), Georgia, serif;
+  font-style: italic;
+}
+
+.blockquote-vectrex {
+  border-left: 4px solid #00FF88;
+  font-family: var(--font-mono-carnet), monospace;
+  box-shadow: -4px 0 20px rgba(0, 255, 136, 0.2);
+}
+
+/* Card hover effects */
+.card-papier {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-papier:hover {
+  transform: rotate(-0.5deg) translateY(-4px);
+  box-shadow: 8px 8px 0 #1a1a1a;
+}
+
+.card-vectrex {
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.card-vectrex:hover {
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.4), 0 0 40px rgba(0, 255, 136, 0.2);
+  border-color: #00FF88;
+}
+
+/* Selection styles */
+.papier-selection::selection {
+  background: #1a1a1a;
+  color: #FDFCF0;
+}
+
+.vectrex-selection::selection {
+  background: #00FF88;
+  color: #050505;
+}

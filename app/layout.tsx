@@ -54,9 +54,16 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const fontClasses = [
+    spaceGrotesk.variable,
+    instrumentSerif.variable,
+    ibmPlexMono.variable,
+    playfairDisplay.variable,
+  ].filter(Boolean).join(' ')
+
   return (
     <html lang="fr">
-      <body className={`${spaceGrotesk.variable} ${instrumentSerif.variable} ${ibmPlexMono.variable} ${playfairDisplay.variable} font-sans antialiased`}>
+      <body className={`${fontClasses} font-sans antialiased`}>
         {children}
         <Analytics />
       </body>

@@ -4,13 +4,14 @@
   "description": "Template Master Sanity.io avec Page Builder ultra-flexible",
   "main": "index.js",
   "scripts": {
-    "dev": "cd web && npm run dev",
+    "dev": "npm --prefix web run dev",
     "dev:sanity": "sanity dev",
-    "start": "cd web && npm run start",
-    "build": "cd web && npm run build",
+    "start": "npm --prefix web run start",
+    "build": "npm --prefix web run build",
     "build:sanity": "sanity build",
     "deploy": "sanity deploy",
-    "deploy-graphql": "sanity graphql deploy"
+    "deploy-graphql": "sanity graphql deploy",
+    "postinstall": "npm --prefix web install --legacy-peer-deps"
   },
   "keywords": [
     "sanity",

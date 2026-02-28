@@ -11,7 +11,7 @@ const ibmPlexMono = IBM_Plex_Mono({
 
 const playfairDisplay = Playfair_Display({
   subsets: ["latin"],
-  weight: ["400", "700"],
+  weight: "400",
   variable: "--font-serif-carnet",
 })
 

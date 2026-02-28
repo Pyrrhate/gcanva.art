@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { Space_Grotesk, Instrument_Serif } from 'next/font/google'
-import { Analytics } from '@vercel/analytics/next'
+import { Analytics } from "@vercel/analytics/react"
 import './globals.css'
 
 const spaceGrotesk = Space_Grotesk({ 

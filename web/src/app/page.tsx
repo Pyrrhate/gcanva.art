@@ -24,7 +24,6 @@ const GARDEN_NOTES_QUERY = defineQuery(/* groq */ `
     "slug": coalesce(slug.current, _id),
     title,
     lastTendedAt,
-    displayMode,
     tags,
     imageCaption,
     mainImage {
@@ -36,11 +35,7 @@ const GARDEN_NOTES_QUERY = defineQuery(/* groq */ `
         }
       }
     },
-    "contentText": pt::text(content),
-    "sectionItems": contentSections[]{
-      title,
-      "contentText": pt::text(content)
-    }
+    "contentText": pt::text(content)
   }
 `);
 
@@ -55,7 +50,6 @@ interface GardenNoteData {
   title: string;
   tags?: string[];
   lastTendedAt?: string;
-  displayMode?: "auto" | "single" | "sectioned";
   imageCaption?: string;
   mainImage?: {
     asset?: {
@@ -69,10 +63,6 @@ interface GardenNoteData {
     };
   };
   contentText?: string;
-  sectionItems?: Array<{
-    title?: string;
-    contentText?: string;
-  }>;
 }
 
 function mapGardenNoteToFeedItems(note: GardenNoteData): CreativeFeedItem[] {
@@ -83,13 +73,6 @@ function mapGardenNoteToFeedItems(note: GardenNoteData): CreativeFeedItem[] {
         day: "numeric",
       })
     : undefined;
-
-  const sections = (note.sectionItems || [])
-    .filter((section) => (section.contentText || "").trim().length > 0)
-    .map((section) => ({
-      title: section.title,
-      content: section.contentText || "",
-    }));
 
   const textItem: CreativeFeedItem = {
     id: note._id,
@@ -106,8 +89,6 @@ function mapGardenNoteToFeedItems(note: GardenNoteData): CreativeFeedItem[] {
       postId: note._id,
       tags: note.tags,
       timestamp,
-      displayMode: note.displayMode || "auto",
-      sections,
     },
   };
 

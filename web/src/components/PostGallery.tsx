@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface GalleryImage {
   url: string;
@@ -15,9 +16,10 @@ interface GalleryImage {
 
 interface PostGalleryProps {
   images: GalleryImage[];
+  className?: string;
 }
 
-export default function PostGallery({ images }: PostGalleryProps) {
+export default function PostGallery({ images, className }: PostGalleryProps) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   const activeImage = useMemo(() => {
@@ -63,15 +65,15 @@ export default function PostGallery({ images }: PostGalleryProps) {
   }
 
   return (
-    <section className="mt-10 space-y-4">
-      <h2 className="text-2xl font-semibold text-foreground">Galerie</h2>
+    <section className={cn("space-y-4", className)}>
+      <h2 className="text-xl font-semibold text-foreground sm:text-2xl">Galerie</h2>
       <div className="columns-1 gap-4 space-y-4 sm:columns-2 lg:columns-3">
         {images.map((image, index) => (
           <button
             key={`${image.url}-${index}`}
             type="button"
             onClick={() => setActiveIndex(index)}
-            className="article-card group mb-4 block w-full break-inside-avoid overflow-hidden rounded-2xl border text-left transition-transform duration-300 hover:scale-[1.01]"
+            className="article-card group mb-4 block w-full min-h-[2.5rem] break-inside-avoid overflow-hidden rounded-2xl border text-left transition-transform duration-300 hover:scale-[1.01] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
             <figure className="relative overflow-hidden">
               <div className="card-corner-decoration" />
@@ -116,7 +118,7 @@ export default function PostGallery({ images }: PostGalleryProps) {
               type="button"
               aria-label="Fermer"
               onClick={() => setActiveIndex(null)}
-              className="absolute right-4 top-4 z-30 rounded-full border border-white/40 bg-black/70 p-3 text-white shadow-lg backdrop-blur-sm transition-colors hover:bg-black/90"
+              className="absolute right-4 top-4 z-30 flex h-12 w-12 min-h-[2.75rem] min-w-[2.75rem] items-center justify-center rounded-full border border-white/40 bg-black/70 p-0 text-white shadow-lg backdrop-blur-sm transition-colors hover:bg-black/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
             >
               <X className="h-5 w-5" />
             </button>
@@ -128,7 +130,7 @@ export default function PostGallery({ images }: PostGalleryProps) {
                     type="button"
                     aria-label="Image précédente"
                     onClick={goPrevious}
-                    className="absolute left-2 z-10 rounded-full border border-white/20 bg-black/50 p-2 text-white hover:bg-black/70"
+                    className="absolute left-2 z-10 flex h-11 w-11 min-h-[2.75rem] min-w-[2.75rem] items-center justify-center rounded-full border border-white/20 bg-black/50 p-0 text-white hover:bg-black/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
                   >
                     <ChevronLeft className="h-5 w-5" />
                   </button>
@@ -172,7 +174,7 @@ export default function PostGallery({ images }: PostGalleryProps) {
                     type="button"
                     aria-label="Image suivante"
                     onClick={goNext}
-                    className="absolute right-2 z-10 rounded-full border border-white/20 bg-black/50 p-2 text-white hover:bg-black/70"
+                    className="absolute right-2 z-10 flex h-11 w-11 min-h-[2.75rem] min-w-[2.75rem] items-center justify-center rounded-full border border-white/20 bg-black/50 p-0 text-white hover:bg-black/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
                   >
                     <ChevronRight className="h-5 w-5" />
                   </button>
@@ -189,7 +191,7 @@ export default function PostGallery({ images }: PostGalleryProps) {
                         key={`${image.url}-thumb-${index}`}
                         type="button"
                         onClick={() => setActiveIndex(index)}
-                        className={`relative h-14 w-20 shrink-0 overflow-hidden rounded-lg border transition-all ${
+                        className={`relative h-14 w-20 shrink-0 overflow-hidden rounded-lg border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black ${
                           isActive
                             ? "border-white/80 opacity-100"
                             : "border-white/25 opacity-65 hover:opacity-90"

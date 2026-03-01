@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Caveat, Inter, Playfair_Display } from "next/font/google";
+import { DM_Sans, Fraunces } from "next/font/google";
 import Background from "@/components/Background";
 import SiteFooter from "@/components/SiteFooter";
 import ThemeProvider from "@/components/ThemeProvider";
@@ -7,19 +7,16 @@ import { AudioProvider } from "@/components/audio/AudioProvider";
 import GlobalPlayer from "@/components/audio/GlobalPlayer";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-geist-sans",
+const dmSans = DM_Sans({
+  variable: "--font-sans",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const playfair = Playfair_Display({
-  variable: "--font-geist-mono",
+const fraunces = Fraunces({
+  variable: "--font-serif",
   subsets: ["latin"],
-});
-
-const caveat = Caveat({
-  variable: "--font-brand-hand",
-  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -39,7 +36,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body
-        className={`${inter.variable} ${playfair.variable} ${caveat.variable} antialiased`}
+        className={`${dmSans.variable} ${fraunces.variable} font-sans antialiased`}
       >
         <AudioProvider>
           <ThemeProvider

@@ -9,22 +9,30 @@ export default function PortalPage() {
 
   return (
     <main className="min-h-screen bg-background text-foreground">
+      {/* Lien d'évitement pour accessibilité */}
+      <a
+        href="#contenu-principal"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-6 focus:top-4 focus:z-[100] focus:rounded focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+      >
+        Aller au contenu principal
+      </a>
+
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 px-6 py-6 md:px-12">
-        <span className="text-sm tracking-wider uppercase">GCanva</span>
+      <header className="fixed top-0 left-0 right-0 z-50 px-6 py-5 md:px-12 md:py-6">
+        <span className="text-sm font-medium tracking-wider uppercase text-foreground/90">GCanva</span>
       </header>
 
       {/* Main Content */}
-      <div className="flex flex-col lg:flex-row min-h-screen">
+      <div id="contenu-principal" className="flex flex-col lg:flex-row min-h-screen" tabIndex={-1}>
         {/* Left Side - Introduction */}
-        <div className="flex-1 flex flex-col justify-center px-6 py-24 md:px-12 lg:px-16 lg:py-0">
-          <div className="max-w-xl">
-            <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl leading-tight mb-8">
+        <div className="flex-1 flex flex-col justify-center px-6 py-20 md:px-12 md:py-24 lg:px-16 lg:py-0">
+          <div className="max-w-xl space-y-8">
+            <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl leading-tight">
               Bienvenue dans<br />
               <span className="italic">l{"'"}Interstice</span>
             </h1>
             
-            <div className="space-y-6 text-muted-foreground leading-relaxed">
+            <div className="space-y-6 text-muted-foreground leading-relaxed text-[1.0625rem]">
               <p>
                 Mon travail repose sur deux grilles de lecture : la precision millimetree 
                 du developpement web et l{"'"}energie brute de l{"'"}experimentation visuelle.
@@ -42,7 +50,7 @@ export default function PortalPage() {
                 un espace organique ou les idees poussent, mutent et se melangent sans contrainte.
               </p>
               
-              <p className="text-foreground">
+              <p className="text-foreground font-medium">
                 Deux salles, deux ambiances. Bonne exploration.
               </p>
             </div>
@@ -54,7 +62,7 @@ export default function PortalPage() {
           {/* Studio Card */}
           <Link
             href="https://studio.gcanva.art"
-            className="flex-1 group relative flex flex-col justify-end p-6 md:p-8 lg:p-12 border-t lg:border-t-0 lg:border-l border-border transition-colors duration-500 hover:bg-secondary/50"
+            className="flex-1 group relative flex flex-col justify-end min-h-[280px] md:min-h-[320px] p-6 md:p-8 lg:p-12 border-t lg:border-t-0 lg:border-l border-border transition-colors duration-500 hover:bg-secondary/50 focus-visible:bg-secondary/40 focus-visible:outline-offset-[-2px]"
             onMouseEnter={() => setHoveredSide("studio")}
             onMouseLeave={() => setHoveredSide(null)}
           >
@@ -87,7 +95,7 @@ export default function PortalPage() {
           {/* Carnet Card */}
           <Link
             href="https://carnet.gcanva.art"
-            className="flex-1 group relative flex flex-col justify-end p-6 md:p-8 lg:p-12 border-t lg:border-t-0 lg:border-l border-border transition-colors duration-500 hover:bg-secondary/50"
+            className="flex-1 group relative flex flex-col justify-end min-h-[280px] md:min-h-[320px] p-6 md:p-8 lg:p-12 border-t lg:border-t-0 lg:border-l border-border transition-colors duration-500 hover:bg-secondary/50 focus-visible:bg-secondary/40 focus-visible:outline-offset-[-2px]"
             onMouseEnter={() => setHoveredSide("carnet")}
             onMouseLeave={() => setHoveredSide(null)}
           >
@@ -123,9 +131,9 @@ export default function PortalPage() {
       </div>
 
       {/* Footer */}
-      <footer className="px-6 py-6 md:px-12 lg:absolute lg:bottom-0 lg:left-0 lg:right-0">
-        <div className="flex items-center justify-between text-xs text-muted-foreground">
-          <span>gcanva.art</span>
+      <footer className="px-6 py-6 md:px-12 lg:absolute lg:bottom-0 lg:left-0 lg:right-0" role="contentinfo">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
+          <span className="font-medium text-foreground/80">gcanva.art</span>
           <span>Developpeur & Artiste Visuel</span>
         </div>
       </footer>

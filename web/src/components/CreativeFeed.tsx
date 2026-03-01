@@ -22,7 +22,7 @@ export default function CreativeFeed({
   siteTitle = "gcanva.art",
   headerSubtitle = "Un flux vivant d'idées et d'explorations créatives",
 }: CreativeFeedProps) {
-  const [viewMode, setViewMode] = useState<ViewMode>("timeline");
+  const [viewMode, setViewMode] = useState<ViewMode>("masonry");
   const [activeTag, setActiveTag] = useState<string>("all");
 
   const availableTags = useMemo(() => {
@@ -59,12 +59,24 @@ export default function CreativeFeed({
         showViewModeControls
       />
 
+      <section className="mx-auto w-full max-w-7xl px-4 pt-6 sm:px-6 md:pt-10">
+        <div className="article-page-wrapper rounded-2xl border border-border/45 px-5 py-7 sm:px-6 sm:py-8 md:px-10 md:py-10">
+          <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-muted-foreground/80">Underground Alchemist</p>
+          <h1 className="mt-3 text-balance font-serif text-3xl font-medium leading-[1.14] tracking-[-0.01em] text-foreground md:text-5xl">
+            Carnet : Alchimie digitale
+          </h1>
+          <p className="mt-5 max-w-3xl text-base leading-relaxed text-foreground/80 md:text-lg">
+            Laboratoire en chantier permanent où matière visuelle, code et intuition se contaminent pour produire des formes vivantes.
+          </p>
+        </div>
+      </section>
+
       {availableTags.length > 0 && (
-        <div className="mx-auto flex w-full max-w-7xl flex-wrap gap-2 px-6 pt-4">
+        <div className="mx-auto flex w-full max-w-7xl flex-wrap gap-3 px-4 pt-6 sm:px-6 sm:pt-8">
           <button
             type="button"
             onClick={() => setActiveTag("all")}
-            className={`rounded-full border px-3 py-1 text-xs transition-colors ${
+            className={`min-h-[2.5rem] rounded-full border px-4 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
               activeTag === "all"
                 ? "border-primary bg-primary/10 text-primary"
                 : "border-border text-muted-foreground hover:border-primary/40"
@@ -77,7 +89,7 @@ export default function CreativeFeed({
               key={tag}
               type="button"
               onClick={() => setActiveTag(tag)}
-              className={`rounded-full border px-3 py-1 text-xs transition-colors ${
+              className={`min-h-[2.5rem] rounded-full border px-4 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
                 activeTag === tag
                   ? "border-primary bg-primary/10 text-primary"
                   : "border-border text-muted-foreground hover:border-primary/40"
@@ -91,7 +103,7 @@ export default function CreativeFeed({
 
       {/* TIMELINE VIEW */}
       {viewMode === "timeline" && (
-        <div className="mx-auto max-w-2xl px-6 py-12">
+        <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6 sm:py-12">
           <div className="relative space-y-16">
             {filteredItems.length === 0 ? (
               <div className="flex items-center justify-center py-24">
@@ -123,7 +135,7 @@ export default function CreativeFeed({
 
       {/* MASONRY VIEW */}
       {viewMode === "masonry" && (
-        <div className="mx-auto max-w-7xl px-6 py-12">
+        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12">
           {filteredItems.length === 0 ? (
             <div className="flex items-center justify-center py-24">
               <div className="text-center">
@@ -136,7 +148,7 @@ export default function CreativeFeed({
               </div>
             </div>
           ) : (
-            <div className="columns-1 gap-6 space-y-6 sm:columns-2 lg:columns-3">
+            <div className="columns-1 gap-6 space-y-6 sm:columns-2 lg:columns-3 [column-gap:1.5rem]">
               {filteredItems.map((item, index) => (
                 <div
                   key={item.id}

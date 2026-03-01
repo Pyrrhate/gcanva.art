@@ -17,8 +17,9 @@ const config: Config = {
       },
     },
     extend: {
-        fontFamily: {
-        sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
+      fontFamily: {
+        sans: ["var(--font-sans)", "DM Sans", "system-ui", "-apple-system", "sans-serif"],
+        serif: ["var(--font-serif)", "Fraunces", "Georgia", "serif"],
       },
       colors: {
         border: "hsl(var(--border))",

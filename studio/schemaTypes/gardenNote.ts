@@ -217,27 +217,11 @@ export default defineType({
       validation: (Rule) => Rule.required().min(1),
     }),
     defineField({
-      name: 'displayMode',
-      title: 'Display Mode',
-      type: 'string',
-      description: 'Optionnel. Détermine le rendu de la note côté front.',
-      options: {
-        list: [
-          {title: 'Auto', value: 'auto'},
-          {title: 'Single Flow', value: 'single'},
-          {title: 'Split Sections', value: 'sectioned'},
-        ],
-        layout: 'radio',
-      },
-      initialValue: 'auto',
-    }),
-    defineField({
       name: 'contentSections',
       title: 'Content Sections (optional)',
       type: 'array',
       description:
-        'Optionnel. Scinde une note longue en sections cliquables pour l\'affichage frontend.',
-      hidden: ({document}) => document?.displayMode !== 'sectioned',
+        'Optionnel. Scinde une note en sections affichées uniquement sur la page de l\'article (pas à l\'accueil).',
       of: [
         defineArrayMember({
           type: 'object',

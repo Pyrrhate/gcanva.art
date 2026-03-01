@@ -1,6 +1,5 @@
 "use client";
 
-import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ImageIcon, Music, Pause, Play } from "lucide-react";
@@ -33,11 +32,6 @@ interface TextItemData {
   author?: string;
   postId?: string;
   tags?: string[];
-  displayMode?: "auto" | "single" | "sectioned";
-  sections?: Array<{
-    title?: string;
-    content: string;
-  }>;
 }
 
 interface MusicItemData {
@@ -113,46 +107,8 @@ function ImageCard({ data }: { data: ImageItemData }) {
 }
 
 function TextCard({ data }: { data: TextItemData }) {
-  const [activeSectionIndex, setActiveSectionIndex] = useState(0);
-
-  const normalizedSections = useMemo(() => {
-    if (data.displayMode === "sectioned" && data.sections && data.sections.length > 0) {
-      return data.sections.filter((section) => section.content?.trim().length > 0);
-    }
-
-    if (data.displayMode === "single") {
-      return [{ title: "Contenu", content: data.content }];
-    }
-
-    const paragraphs = data.content
-      .split(/\n{2,}/g)
-      .map((paragraph) => paragraph.trim())
-      .filter(Boolean);
-
-    if (paragraphs.length > 1) {
-      return paragraphs.map((paragraph, index) => ({
-        title: `Partie ${index + 1}`,
-        content: paragraph,
-      }));
-    }
-
-    const fallback = data.content.trim();
-    if (fallback.length <= 560) {
-      return [{ title: "Contenu", content: fallback }];
-    }
-
-    const chunks = fallback.match(/.{1,360}(\s|$)/g) || [fallback];
-    return chunks.map((chunk, index) => ({
-      title: `Partie ${index + 1}`,
-      content: chunk.trim(),
-    }));
-  }, [data.content, data.displayMode, data.sections]);
-
-  const hasSplitContent = normalizedSections.length > 1;
-  const primaryTag = data.tags?.[0];
-  const currentSection = normalizedSections[activeSectionIndex] || normalizedSections[0];
-  const currentText = currentSection?.content || "";
-  const isGreatPost = hasSplitContent || currentText.length > POST_PREVIEW_THRESHOLD;
+  const currentText = data.content.trim();
+  const isGreatPost = currentText.length > POST_PREVIEW_THRESHOLD;
   const previewText = currentText.slice(0, POST_PREVIEW_THRESHOLD).trim();
   const textClassName = isGreatPost
     ? "whitespace-pre-wrap text-left text-sm leading-relaxed text-foreground/80 line-clamp-6"
@@ -222,25 +178,6 @@ function TextCard({ data }: { data: TextItemData }) {
           </div>
         )}
 
-        {hasSplitContent && (
-          <div className="mt-3 flex flex-wrap gap-1.5">
-            {normalizedSections.map((section, index) => (
-              <button
-                key={`${section.title || "section"}-${index}`}
-                type="button"
-                onClick={() => setActiveSectionIndex(index)}
-                className={`rounded-full border px-2.5 py-0.5 text-[11px] font-medium transition-all duration-200 ${
-                  activeSectionIndex === index
-                    ? "border-primary/40 bg-primary/10 text-primary"
-                    : "border-border/60 text-muted-foreground hover:border-primary/30 hover:text-foreground"
-                }`}
-              >
-                {section.title || `Partie ${index + 1}`}
-              </button>
-            ))}
-          </div>
-        )}
-
         <div className="mt-3 flex-1">
           <p className={textClassName}>{isGreatPost ? `${previewText}...` : currentText}</p>
         </div>
@@ -297,7 +234,7 @@ function MusicCard({ data }: { data: MusicItemData }) {
               <button
                 type="button"
                 onClick={() => void handlePlay()}
-                className="flex h-14 w-14 items-center justify-center rounded-full bg-background/80 text-foreground opacity-0 shadow-lg backdrop-blur-sm transition-all duration-300 group-hover:opacity-100 hover:scale-110 hover:bg-background/90"
+                className="flex h-14 w-14 min-h-[3rem] min-w-[3rem] items-center justify-center rounded-full bg-background/80 text-foreground opacity-0 shadow-lg backdrop-blur-sm transition-all duration-300 group-hover:opacity-100 hover:scale-110 hover:bg-background/90 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 aria-label={isCurrentTrack && isPlaying ? "Mettre en pause" : "Lire le morceau"}
               >
                 {isCurrentTrack && isPlaying ? (

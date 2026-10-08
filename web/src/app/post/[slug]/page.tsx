@@ -3,19 +3,26 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { defineQuery, PortableText, type PortableTextComponents } from "next-sanity";
+import JsonLd from "@/components/JsonLd";
 import SiteHeader from "@/components/SiteHeader";
 import PostGallery from "@/components/PostGallery";
+import { hasBody, toExcerpt } from "@/lib/site";
 import { client } from "@/sanity/client";
+import { buildNoteJsonLd, type JsonLdNote } from "@/sanity/jsonld";
 import { buildSeoMetadata, getSiteSettingsSeo, type SeoData } from "@/sanity/seo";
 
 const POST_QUERY = defineQuery(/* groq */ `
   *[_type == "gardenNote" && (slug.current == $slug || _id == $slug)][0] {
     _id,
+    _createdAt,
     title,
     "slug": coalesce(slug.current, _id),
     tags,
     lastTendedAt,
     imageCaption,
+    artwork,
+    "contentText": pt::text(content),
+    relatedNotes[]->{ title, "slug": coalesce(slug.current, _id) },
     content[]{
       ...,
       _type == "polaroidImage" => {
@@ -39,17 +46,18 @@ const POST_QUERY = defineQuery(/* groq */ `
           url,
           metadata {
             lqip,
-            dimensions { aspectRatio }
+            dimensions { aspectRatio, width, height }
           }
         }
       }
     },
     mainImage {
+      alt,
       asset->{
         url,
         metadata {
           lqip,
-          dimensions { aspectRatio }
+          dimensions { aspectRatio, width, height }
         }
       }
     },
@@ -76,7 +84,11 @@ const POST_QUERY = defineQuery(/* groq */ `
 
 const POST_SEO_QUERY = defineQuery(/* groq */ `
   *[_type == "gardenNote" && (slug.current == $slug || _id == $slug)][0] {
+    _createdAt,
     title,
+    lastTendedAt,
+    "contentText": pt::text(content),
+    "mainImageUrl": mainImage.asset->url,
     seo {
       title,
       description,
@@ -89,17 +101,15 @@ const POST_SEO_QUERY = defineQuery(/* groq */ `
 `);
 
 interface PostSeoData {
+  _createdAt?: string;
   title?: string;
+  lastTendedAt?: string;
+  contentText?: string;
+  mainImageUrl?: string;
   seo?: SeoData;
 }
 
-interface PostData {
-  _id: string;
-  title: string;
-  slug: string;
-  tags?: string[];
-  lastTendedAt?: string;
-  imageCaption?: string;
+interface PostData extends JsonLdNote {
   gallery?: Array<{
     alt?: string;
     caption?: string;
@@ -110,18 +120,23 @@ interface PostData {
           lqip?: string;
           dimensions?: {
             aspectRatio?: number;
+            width?: number;
+            height?: number;
           };
         };
       };
     };
   }>;
   mainImage?: {
+    alt?: string;
     asset?: {
       url?: string;
       metadata?: {
         lqip?: string;
         dimensions?: {
           aspectRatio?: number;
+          width?: number;
+          height?: number;
         };
       };
     };
@@ -194,6 +209,12 @@ const PORTABLE_TEXT_COMPONENTS: PortableTextComponents = {
   },
 };
 
+function latestDate(...values: Array<string | undefined>) {
+  const valid = values.filter((v): v is string => Boolean(v) && !Number.isNaN(new Date(v as string).getTime()));
+  if (valid.length === 0) return undefined;
+  return valid.reduce((a, b) => (new Date(a) >= new Date(b) ? a : b));
+}
+
 function formatDate(dateValue?: string) {
   if (!dateValue) return "";
 
@@ -219,12 +240,20 @@ export async function generateMetadata({
     getSiteSettingsSeo(),
   ]);
 
+  const title = postSeo?.title?.trim();
+  const excerpt = toExcerpt(postSeo?.contentText);
+  const tagline = title ? `${title}, une note du carnet de Guillaume Canva.` : "Une note du carnet de Guillaume Canva.";
+
   const metadata = buildSeoMetadata({
     pageSeo: postSeo?.seo,
     sectionSeo: settings?.postSeo,
-    fallbackTitle: postSeo?.title ? `gcanva.art — ${postSeo.title}` : "gcanva.art — Note",
-    fallbackDescription: "Lecture d'une note du carnet créatif gcanva.art.",
+    fallbackTitle: title ? `${title} — Carnet gcanva.art` : "Note — Carnet gcanva.art",
+    fallbackDescription: excerpt || tagline,
     settings,
+    path: `/post/${slug}`,
+    forceNoIndex: !hasBody(postSeo?.contentText),
+    publishedTime: postSeo?._createdAt,
+    modifiedTime: latestDate(postSeo?._createdAt, postSeo?.lastTendedAt),
   });
 
   const hasOgImage = Boolean(postSeo?.seo?.ogImage?.asset?.url || settings?.postSeo?.ogImage?.asset?.url || settings?.defaultSeo?.ogImage?.asset?.url);
@@ -233,18 +262,19 @@ export async function generateMetadata({
     return metadata;
   }
 
-  const dynamicOgPath = `/post/${slug}/opengraph-image`;
+  /* L'image de la note parle mieux de l'œuvre qu'une carte générée ; la carte reste en secours. */
+  const socialImage = postSeo?.mainImageUrl || `/post/${slug}/opengraph-image`;
 
   return {
     ...metadata,
     openGraph: {
       ...metadata.openGraph,
-      images: [{ url: dynamicOgPath }],
+      images: [{ url: socialImage, alt: title || "gcanva.art" }],
     },
     twitter: {
       ...metadata.twitter,
       card: "summary_large_image",
-      images: [dynamicOgPath],
+      images: [socialImage],
     },
   };
 }
@@ -283,8 +313,11 @@ export default async function PostPage({
     }))
     .filter((item) => item.url.length > 0);
 
+  const jsonLd = buildNoteJsonLd(post, settings);
+
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <JsonLd data={jsonLd} />
       <SiteHeader
         siteTitle={settings?.brandTitle || settings?.siteName || "gcanva.art"}
         subtitle="Lecture d'une note"
@@ -336,7 +369,7 @@ export default async function PostPage({
               >
                 <Image
                   src={post.mainImage.asset.url}
-                  alt={post.title}
+                  alt={post.mainImage.alt || post.title}
                   fill
                   draggable={false}
                   className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"

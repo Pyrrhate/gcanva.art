@@ -5,6 +5,7 @@ import SiteFooter from "@/components/SiteFooter";
 import ThemeProvider from "@/components/ThemeProvider";
 import { AudioProvider } from "@/components/audio/AudioProvider";
 import GlobalPlayer from "@/components/audio/GlobalPlayer";
+import { CARNET_URL, PORTAL_URL } from "@/lib/site";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -20,9 +21,16 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://gcanva.art"),
-  title: "gcanva.art — Digital Garden",
-  description: "A curated space for creative expressions, images, music, and events.",
+  metadataBase: new URL(CARNET_URL),
+  title: "Carnet de Guillaume Canva",
+  description: "Dessins, peintures et expérimentations visuelles de Guillaume Canva, à Tournai.",
+  authors: [{ name: "Guillaume Canva", url: PORTAL_URL }],
+  creator: "Guillaume Canva",
+  alternates: {
+    types: {
+      "application/rss+xml": `${CARNET_URL}/rss.xml`,
+    },
+  },
 };
 
 export default function RootLayout({
@@ -32,7 +40,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="fr"
       suppressHydrationWarning
     >
       <body

@@ -10,6 +10,8 @@ export async function generateMetadata(): Promise<Metadata> {
     fallbackTitle: "gcanva.art — Expérimentation Digitale",
     fallbackDescription: "Laboratoire d'essais visuels et sonores de gcanva.art.",
     settings,
+    path: "/experimentation-digitale",
+    forceNoIndex: true,
   });
 }
 

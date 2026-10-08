@@ -10,6 +10,8 @@ export async function generateMetadata(): Promise<Metadata> {
     fallbackTitle: "gcanva.art — Contact",
     fallbackDescription: "Contacte gcanva.art pour collaborations artistiques et projets digitaux.",
     settings,
+    path: "/contact",
+    forceNoIndex: true,
   });
 }
 

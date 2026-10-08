@@ -1,39 +1,49 @@
-import type { Metadata } from 'next'
-import { Space_Grotesk, Instrument_Serif } from 'next/font/google'
-import { Analytics } from '@vercel/analytics/next'
-import './globals.css'
+import type { Metadata } from "next"
+import { Space_Grotesk, Instrument_Serif } from "next/font/google"
+import { Analytics } from "@vercel/analytics/next"
+import { jsonLd, site } from "./site"
+import "./globals.css"
 
-const spaceGrotesk = Space_Grotesk({ 
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
-  variable: '--font-sans'
-});
+  variable: "--font-sans",
+})
 
-const instrumentSerif = Instrument_Serif({ 
-  weight: '400',
+const instrumentSerif = Instrument_Serif({
+  weight: "400",
   subsets: ["latin"],
-  variable: '--font-serif'
-});
+  variable: "--font-serif",
+})
 
 export const metadata: Metadata = {
-  title: 'GCanva | L\'Interstice',
-  description: 'Precision millimétrée du développement web et énergie brute de l\'expérimentation visuelle.',
-  generator: 'v0.app',
-  icons: {
-    icon: [
-      {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
-    ],
-    apple: '/apple-icon.png',
+  metadataBase: new URL(site.url),
+  title: {
+    default: site.title,
+    template: "%s · gcanva.art",
+  },
+  description: site.description,
+  applicationName: site.name,
+  authors: [{ name: site.person, url: site.url }],
+  creator: site.person,
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    locale: "fr_BE",
+    url: site.url,
+    siteName: site.name,
+    title: site.title,
+    description: site.description,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: site.title,
+    description: site.description,
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 }
 
@@ -43,8 +53,9 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="fr">
+    <html lang="fr" className="scroll-smooth">
       <body className={`${spaceGrotesk.variable} ${instrumentSerif.variable} font-sans antialiased`}>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
         {children}
         <Analytics />
       </body>

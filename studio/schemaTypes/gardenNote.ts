@@ -48,10 +48,76 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'artwork',
+      title: 'Œuvre',
+      type: 'object',
+      description:
+        'Facultatif. Décrit l\'objet physique ou numérique montré dans la note. Alimente les données structurées (schema.org VisualArtwork).',
+      options: {collapsible: true, collapsed: true},
+      fields: [
+        defineField({
+          name: 'medium',
+          title: 'Technique',
+          type: 'string',
+          description: 'Ex. : acrylique, encre, graphite, numérique, sérigraphie.',
+          validation: (Rule) => Rule.max(80),
+        }),
+        defineField({
+          name: 'surface',
+          title: 'Support',
+          type: 'string',
+          description: 'Ex. : toile, panneau MDF, papier, coton.',
+          validation: (Rule) => Rule.max(80),
+        }),
+        defineField({
+          name: 'width',
+          title: 'Largeur',
+          type: 'number',
+          validation: (Rule) => Rule.positive(),
+        }),
+        defineField({
+          name: 'height',
+          title: 'Hauteur',
+          type: 'number',
+          validation: (Rule) => Rule.positive(),
+        }),
+        defineField({
+          name: 'unit',
+          title: 'Unité',
+          type: 'string',
+          options: {
+            list: [
+              {title: 'Centimètres', value: 'cm'},
+              {title: 'Millimètres', value: 'mm'},
+              {title: 'Pixels', value: 'px'},
+            ],
+            layout: 'radio',
+          },
+          initialValue: 'cm',
+        }),
+        defineField({
+          name: 'dateCreated',
+          title: 'Date de réalisation',
+          type: 'date',
+          description: 'Année ou date où l\'œuvre a été faite, distincte de la publication de la note.',
+          options: {dateFormat: 'YYYY-MM-DD'},
+        }),
+      ],
+    }),
+    defineField({
       name: 'mainImage',
       title: 'Main Image',
       type: 'image',
       options: {hotspot: true},
+      fields: [
+        defineField({
+          name: 'alt',
+          title: 'Alternative Text',
+          type: 'string',
+          description: 'Décrit l\'image pour les lecteurs d\'écran et les moteurs. Par défaut : le titre de la note.',
+          validation: (Rule) => Rule.max(180),
+        }),
+      ],
     }),
     defineField({
       name: 'imageCaption',

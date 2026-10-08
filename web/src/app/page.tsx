@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import {defineQuery} from "next-sanity";
 import CreativeFeed, { type CreativeFeedItem } from "@/components/CreativeFeed";
+import JsonLd from "@/components/JsonLd";
 import { client } from "@/sanity/client";
+import { buildCarnetJsonLd, type JsonLdNote } from "@/sanity/jsonld";
 import { buildSeoMetadata, getSiteSettingsSeo, type SeoData } from "@/sanity/seo";
 
 const HOMEPAGE_HEADER_QUERY = defineQuery(/* groq */ `
@@ -21,17 +23,19 @@ const HOMEPAGE_HEADER_QUERY = defineQuery(/* groq */ `
 const GARDEN_NOTES_QUERY = defineQuery(/* groq */ `
   *[_type == "gardenNote"] | order(lastTendedAt desc) {
     _id,
+    _createdAt,
     "slug": coalesce(slug.current, _id),
     title,
     lastTendedAt,
     tags,
     imageCaption,
     mainImage {
+      alt,
       asset->{
         url,
         metadata {
           lqip,
-          dimensions { aspectRatio }
+          dimensions { aspectRatio, width, height }
         }
       }
     },
@@ -44,25 +48,21 @@ interface HeaderData {
   seo?: SeoData;
 }
 
-interface GardenNoteData {
-  _id: string;
-  slug: string;
-  title: string;
-  tags?: string[];
-  lastTendedAt?: string;
-  imageCaption?: string;
+interface GardenNoteData extends JsonLdNote {
   mainImage?: {
+    alt?: string;
     asset?: {
       url?: string;
       metadata?: {
         lqip?: string;
         dimensions?: {
           aspectRatio?: number;
+          width?: number;
+          height?: number;
         };
       };
     };
   };
-  contentText?: string;
 }
 
 function mapGardenNoteToFeedItems(note: GardenNoteData): CreativeFeedItem[] {
@@ -82,7 +82,7 @@ function mapGardenNoteToFeedItems(note: GardenNoteData): CreativeFeedItem[] {
       postSlug: note.slug,
       content: note.contentText || "",
       imageSrc: note.mainImage?.asset?.url,
-      imageAlt: note.title,
+      imageAlt: note.mainImage?.alt || note.title,
       imageCaption: note.imageCaption,
       imageAspectRatio: note.mainImage?.asset?.metadata?.dimensions?.aspectRatio,
       imageBlurDataURL: note.mainImage?.asset?.metadata?.lqip,
@@ -106,9 +106,11 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildSeoMetadata({
     pageSeo: homepage?.seo,
     sectionSeo: settings?.homeSeo,
-    fallbackTitle: "gcanva.art — Carnet",
-    fallbackDescription: "Carnet créatif entre alchimie organique et énergie électronique.",
+    fallbackTitle: "Carnet de Guillaume Canva — dessins, peintures, expérimentations",
+    fallbackDescription:
+      "Le carnet visuel de Guillaume Canva, à Tournai : dessins, peintures acryliques, infographies et projets en cours, publiés au fil des sessions.",
     settings,
+    path: "/",
   });
 }
 
@@ -120,12 +122,16 @@ export default async function Page() {
   ]);
 
   const feedItems = (notes || []).flatMap(mapGardenNoteToFeedItems);
+  const jsonLd = buildCarnetJsonLd(notes || [], settings);
 
   return (
-    <CreativeFeed
-      items={feedItems}
-      siteTitle={settings?.brandTitle || settings?.siteName || "gcanva.art"}
-      headerSubtitle={header?.headerSubtitle || "Un flux vivant d'idées et d'explorations créatives"}
-    />
+    <>
+      <JsonLd data={jsonLd} />
+      <CreativeFeed
+        items={feedItems}
+        siteTitle={settings?.brandTitle || settings?.siteName || "gcanva.art"}
+        headerSubtitle={header?.headerSubtitle || "Un flux vivant d'idées et d'explorations créatives"}
+      />
+    </>
   );
 }

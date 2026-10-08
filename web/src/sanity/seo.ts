@@ -1,6 +1,7 @@
 import {cache} from 'react'
 import type {Metadata} from 'next'
 import {defineQuery} from 'next-sanity'
+import {normalizeSiteUrl} from '@/lib/site'
 import {client} from '@/sanity/client'
 
 export interface SeoData {
@@ -93,30 +94,32 @@ export const getSiteSettingsSeo = cache(async () => {
   return client.fetch<SiteSettingsSeo | null>(SITE_SETTINGS_SEO_QUERY)
 })
 
-function toMetadataBase(siteUrl?: string): URL | undefined {
-  if (!siteUrl) return undefined
-  try {
-    return new URL(siteUrl)
-  } catch {
-    return undefined
-  }
-}
-
 export function buildSeoMetadata({
   pageSeo,
   sectionSeo,
   fallbackTitle,
   fallbackDescription,
   settings,
+  path,
+  forceNoIndex = false,
+  publishedTime,
+  modifiedTime,
 }: {
   pageSeo?: SeoData
   sectionSeo?: SeoData
   fallbackTitle: string
   fallbackDescription: string
   settings?: SiteSettingsSeo | null
+  /** Chemin de la page (ex. "/post/les-mains"). Sert à la canonique et à og:url. */
+  path?: string
+  /** Désindexe la page même si le module SEO ne le demande pas (notes sans texte). */
+  forceNoIndex?: boolean
+  publishedTime?: string
+  modifiedTime?: string
 }): Metadata {
   const defaultSeo = settings?.defaultSeo
   const siteName = settings?.siteName || 'gcanva.art'
+  const siteUrl = normalizeSiteUrl(settings?.siteUrl)
 
   const title = pageSeo?.title || sectionSeo?.title || defaultSeo?.title || fallbackTitle
   const description =
@@ -126,7 +129,10 @@ export function buildSeoMetadata({
     pageSeo?.keywords || sectionSeo?.keywords || defaultSeo?.keywords || undefined
 
   const canonicalUrl =
-    pageSeo?.canonicalUrl || sectionSeo?.canonicalUrl || defaultSeo?.canonicalUrl || undefined
+    pageSeo?.canonicalUrl ||
+    sectionSeo?.canonicalUrl ||
+    defaultSeo?.canonicalUrl ||
+    (path ? `${siteUrl}${path === '/' ? '' : path}` : undefined)
 
   const ogImage =
     pageSeo?.ogImage?.asset?.url ||
@@ -134,20 +140,22 @@ export function buildSeoMetadata({
     defaultSeo?.ogImage?.asset?.url ||
     undefined
 
-  const noIndex = pageSeo?.noIndex ?? sectionSeo?.noIndex ?? defaultSeo?.noIndex ?? false
+  const noIndex =
+    forceNoIndex || (pageSeo?.noIndex ?? sectionSeo?.noIndex ?? defaultSeo?.noIndex ?? false)
 
-  const metadataBase = toMetadataBase(settings?.siteUrl)
+  const isArticle = Boolean(publishedTime || modifiedTime)
 
   return {
-    metadataBase,
+    metadataBase: new URL(siteUrl),
     title,
     description,
     keywords,
-    alternates: canonicalUrl
-      ? {
-          canonical: canonicalUrl,
-        }
-      : undefined,
+    alternates: {
+      canonical: canonicalUrl,
+      types: {
+        'application/rss+xml': `${siteUrl}/rss.xml`,
+      },
+    },
     robots: noIndex
       ? {
           index: false,
@@ -161,7 +169,12 @@ export function buildSeoMetadata({
       title,
       description,
       siteName,
+      locale: 'fr_BE',
+      url: canonicalUrl,
       images: ogImage ? [{url: ogImage}] : undefined,
+      ...(isArticle
+        ? {type: 'article', publishedTime, modifiedTime, authors: ['Guillaume Canva']}
+        : {type: 'website'}),
     },
     twitter: {
       card: ogImage ? 'summary_large_image' : 'summary',

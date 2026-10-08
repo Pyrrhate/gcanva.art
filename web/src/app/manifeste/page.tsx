@@ -10,6 +10,8 @@ export async function generateMetadata(): Promise<Metadata> {
     fallbackTitle: "gcanva.art — Manifeste",
     fallbackDescription: "Intentions, méthode et matière du carnet créatif gcanva.art.",
     settings,
+    path: "/manifeste",
+    forceNoIndex: true,
   });
 }
 

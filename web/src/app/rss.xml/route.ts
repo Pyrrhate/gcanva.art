@@ -1,5 +1,7 @@
 import { defineQuery } from "next-sanity";
+import { normalizeSiteUrl } from "@/lib/site";
 import { client } from "@/sanity/client";
+import { noteUrl } from "@/sanity/jsonld";
 import { getSiteSettingsSeo } from "@/sanity/seo";
 
 export const revalidate = 3600;
@@ -37,12 +39,12 @@ export async function GET() {
     client.fetch<RssItem[]>(RSS_QUERY),
   ]);
 
-  const siteUrl = settings?.siteUrl || "https://gcanva.art";
-  const siteName = settings?.siteName || "gcanva.art";
+  const siteUrl = normalizeSiteUrl(settings?.siteUrl);
+  const siteName = settings?.siteName || "Carnet gcanva.art";
 
   const items = (posts || [])
     .map((post) => {
-      const postUrl = `${siteUrl.replace(/\/$/, "")}/post/${post.slug}`;
+      const postUrl = noteUrl(siteUrl, post.slug);
       const description = (post.excerpt || "").slice(0, 260);
 
       return `
@@ -57,12 +59,13 @@ export async function GET() {
     .join("\n");
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>${escapeXml(siteName)}</title>
     <link>${escapeXml(siteUrl)}</link>
+    <atom:link href="${escapeXml(`${siteUrl}/rss.xml`)}" rel="self" type="application/rss+xml" />
     <description>Flux des dernières notes de ${escapeXml(siteName)}</description>
-    <language>fr-FR</language>
+    <language>fr-BE</language>
     ${items}
   </channel>
 </rss>`;
